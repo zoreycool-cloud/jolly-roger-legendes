@@ -1,12 +1,50 @@
 
-document.querySelectorAll('.audio-widget').forEach(widget=>{
- const audio=widget.querySelector('audio'), btn=widget.querySelector('.play'),
- current=widget.querySelector('.current'), duration=widget.querySelector('.duration'),
- seek=widget.querySelector('.seek');
- const fmt=s=>{if(!isFinite(s))return "00:00"; const m=Math.floor(s/60),x=Math.floor(s%60);return `${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`};
- audio.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(audio.duration);seek.max=audio.duration||0});
- audio.addEventListener('timeupdate',()=>{current.textContent=fmt(audio.currentTime);seek.value=audio.currentTime||0});
- audio.addEventListener('ended',()=>btn.classList.remove('is-playing'));
- btn.addEventListener('click',async()=>{if(audio.paused){await audio.play();btn.classList.add('is-playing')}else{audio.pause();btn.classList.remove('is-playing')}});
- seek.addEventListener('input',()=>audio.currentTime=Number(seek.value));
+document.addEventListener("DOMContentLoaded", () => {
+  const audio = document.querySelector("audio");
+  const button = document.querySelector(".play-button");
+  const seek = document.querySelector(".seek");
+  const current = document.querySelector(".current");
+  const duration = document.querySelector(".duration");
+
+  if (!audio || !button || !seek || !current || !duration) return;
+
+  const formatTime = (seconds) => {
+    if (!Number.isFinite(seconds)) return "00:00";
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+  };
+
+  const syncButton = () => {
+    button.dataset.playing = audio.paused ? "false" : "true";
+    button.setAttribute("aria-label", audio.paused ? "Lire" : "Mettre en pause");
+  };
+
+  audio.addEventListener("loadedmetadata", () => {
+    duration.textContent = formatTime(audio.duration);
+    seek.max = audio.duration || 0;
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    current.textContent = formatTime(audio.currentTime);
+    seek.value = audio.currentTime || 0;
+  });
+
+  audio.addEventListener("play", syncButton);
+  audio.addEventListener("pause", syncButton);
+  audio.addEventListener("ended", syncButton);
+
+  button.addEventListener("click", async () => {
+    if (audio.paused) {
+      try { await audio.play(); } catch(e) {}
+    } else {
+      audio.pause();
+    }
+  });
+
+  seek.addEventListener("input", () => {
+    audio.currentTime = Number(seek.value);
+  });
+
+  syncButton();
 });
