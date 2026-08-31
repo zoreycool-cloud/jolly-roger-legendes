@@ -455,3 +455,17 @@ body{
 .turn-flow{display:grid;gap:7px}.turn-flow>div{display:grid;grid-template-columns:42px 1fr;column-gap:10px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.075)}.turn-flow>div span{grid-row:1/3;color:var(--brown);font-size:12px;letter-spacing:.12em}.turn-flow>div strong{color:var(--ivory);font-size:15px;font-weight:500;letter-spacing:.07em}.turn-flow>div p{margin:4px 0 0;color:rgba(255,243,216,.66);font-size:15px;font-weight:300;line-height:1.38}.turn-flow>i{display:none}
 .legend-rule-list{margin:24px 0;border-top:1px solid rgba(126,78,36,.55)}.legend-rule-list p{display:grid;grid-template-columns:1fr 1.25fr;gap:16px;margin:0;padding:11px 0;border-bottom:1px solid rgba(126,78,36,.55)}.legend-rule-list strong{color:var(--ivory);font-size:15px;font-weight:400;letter-spacing:.06em}.legend-rule-list span{color:var(--sand);font-size:14px;font-weight:300;letter-spacing:.05em}
 @media(max-width:600px){.rules-content{margin-top:46px}.rule-chapter{padding:38px 0 42px}.chapter-head{gap:10px}.chapter-head h2{font-size:28px}.chapter-intro{margin-bottom:24px;font-size:16px}.rule-block{margin:21px 0}.rule-block p{font-size:16px}.rule-note{grid-template-columns:1fr;gap:6px;margin-top:25px;padding:14px}.rule-steps p{font-size:15px}.rule-equations p{grid-template-columns:1fr 20px 1.15fr;font-size:14px}.resource-grid,.event-grid{grid-template-columns:1fr}.resource-grid>div,.event-grid>div{padding:14px}.legend-rule-list p{grid-template-columns:1fr;gap:3px}.quick-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ==========================================================
+   V5 — SÉLECTION DU MODE DE JEU
+   ========================================================== */
+.mode-select-page{min-height:100svh;display:grid;place-items:center;padding:56px 22px;text-align:center}
+.mode-select-inner{width:min(90vw,650px);margin:0 auto}
+.mode-select-title{margin:0 0 38px;color:var(--ivory);font-size:clamp(46px,8vw,68px);font-weight:300;line-height:.92;letter-spacing:.06em}
+.mode-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:42px auto 0}
+.mode-choice{min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:24px 18px;border:1px solid rgba(214,178,133,.72);border-radius:24px;background:rgba(0,0,0,.76);color:var(--ivory);text-decoration:none}
+.mode-choice-number{color:var(--brown);font-size:12px;letter-spacing:.16em}
+.mode-choice-copy strong{display:block;font-size:27px;font-weight:400;letter-spacing:.06em}
+.mode-choice-copy small{display:block;margin-top:7px;color:rgba(255,243,216,.58);font-size:14px;font-weight:300;letter-spacing:.035em}
+.duo-principles{margin-top:34px}
+@media(max-width:600px){.mode-select-page{padding:40px 16px 64px}.mode-choice-grid{grid-template-columns:1fr;gap:12px;margin-top:32px}.mode-choice{min-height:118px;border-radius:21px}.mode-choice-copy strong{font-size:24px}}
