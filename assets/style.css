@@ -9,84 +9,122 @@
   --accent:#935c00;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000;color:var(--ivory)}
-body{font-family:"Barlow Condensed",Arial,sans-serif}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#000;
+  color:var(--ivory);
+}
+body{
+  font-family:"Barlow Condensed",Arial,sans-serif;
+  overflow-x:hidden;
+}
 
+/* ===== PAGES LÉGENDES : composition plein écran ===== */
 .legend-page{
-  min-height:100vh;
+  min-height:100svh;
+  height:100svh;
   background:#000;
   display:flex;
   justify-content:center;
+  overflow:hidden;
 }
+
 .legend-shell{
+  position:relative;
   width:min(100%,921px);
-  min-height:100vh;
+  height:100svh;
+  min-height:100svh;
   margin:0 auto;
   overflow:hidden;
   background:#000;
   text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
+
+/* Les mandalas sont décoratifs et ne prennent plus de place dans le flux */
 .hero-top,
 .hero-bottom{
-  width:100%;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(100%,820px);
+  pointer-events:none;
+  z-index:0;
   background-repeat:no-repeat;
   background-position:center;
+  background-size:100% auto;
 }
+
+/* Vrai fondu progressif : visible en haut -> noir avant le contenu */
 .hero-top{
-  height:430px;
+  top:-1px;
+  height:43svh;
   background-image:var(--top);
-  background-size:min(100%,760px) auto;
   background-position:top center;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.78) 66%,rgba(0,0,0,.28) 84%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.78) 66%,rgba(0,0,0,.28) 84%,transparent 100%);
 }
+
+/* Fondu inverse : noir après le contenu -> mandala visible vers le bas */
 .hero-bottom{
-  height:430px;
-  margin-top:18px;
+  bottom:-1px;
+  height:34svh;
   background-image:var(--bottom);
-  background-size:min(100%,760px) auto;
   background-position:bottom center;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 20%,rgba(0,0,0,.68) 48%,#000 75%,#000 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 20%,rgba(0,0,0,.68) 48%,#000 75%,#000 100%);
 }
+
 .main{
+  position:relative;
+  z-index:2;
   width:min(88%,680px);
   margin:0 auto;
+  transform:translateY(1.5svh);
 }
+
 .eyebrow{
-  margin:4px 0 12px;
-  font-size:clamp(13px,2vw,17px);
+  margin:0 0 8px;
+  font-size:clamp(12px,1.8vw,16px);
   font-weight:300;
   letter-spacing:.18em;
   text-transform:uppercase;
 }
 .title{
   margin:0;
-  font-size:clamp(42px,6.4vw,62px);
-  line-height:1.02;
+  font-size:clamp(38px,5.8vw,58px);
+  line-height:1;
   font-weight:400;
-  letter-spacing:.02em;
+  letter-spacing:.018em;
 }
 .title-rule{
-  width:170px;
+  width:150px;
   height:1px;
-  margin:26px auto 30px;
+  margin:20px auto 23px;
   background:linear-gradient(90deg,transparent,var(--accent),transparent);
 }
 
+/* ===== LECTEUR ===== */
 .player{
   width:100%;
-  min-height:92px;
-  padding:15px 22px;
+  min-height:78px;
+  padding:10px 18px;
   display:grid;
-  grid-template-columns:60px 50px minmax(120px,1fr) 50px;
+  grid-template-columns:54px 45px minmax(100px,1fr) 45px;
   align-items:center;
-  gap:13px;
+  gap:10px;
   border:1px solid rgba(214,178,133,.9);
-  border-radius:28px;
+  border-radius:25px;
   background:#000;
 }
 .play{
   appearance:none;
   -webkit-appearance:none;
-  width:60px;
-  height:60px;
+  width:54px;
+  height:54px;
   padding:0;
   border:0;
   border-radius:50%;
@@ -99,14 +137,14 @@ body{font-family:"Barlow Condensed",Arial,sans-serif}
   display:block;
   width:0;
   height:0;
-  margin-left:5px;
-  border-top:12px solid transparent;
-  border-bottom:12px solid transparent;
-  border-left:19px solid var(--deep);
+  margin-left:4px;
+  border-top:10px solid transparent;
+  border-bottom:10px solid transparent;
+  border-left:17px solid var(--deep);
 }
 .play[data-state="pause"] .play-shape{
-  width:19px;
-  height:24px;
+  width:17px;
+  height:22px;
   margin-left:0;
   border:0;
   background:linear-gradient(
@@ -118,11 +156,10 @@ body{font-family:"Barlow Condensed",Arial,sans-serif}
 }
 .time{
   color:var(--sand);
-  font-size:19px;
+  font-size:17px;
   font-weight:400;
   font-variant-numeric:tabular-nums;
 }
-
 .seek{
   appearance:none;
   -webkit-appearance:none;
@@ -139,9 +176,9 @@ body{font-family:"Barlow Condensed",Arial,sans-serif}
 }
 .seek::-webkit-slider-thumb{
   -webkit-appearance:none;
-  width:16px;
-  height:16px;
-  margin-top:-6.5px;
+  width:14px;
+  height:14px;
+  margin-top:-5.5px;
   border:0;
   border-radius:50%;
   background:var(--ivory);
@@ -158,44 +195,120 @@ body{font-family:"Barlow Condensed",Arial,sans-serif}
   border-radius:999px;
 }
 .seek::-moz-range-thumb{
-  width:16px;
-  height:16px;
+  width:14px;
+  height:14px;
   border:0;
   border-radius:50%;
   background:var(--ivory);
 }
 
+/* ===== CRÉDITS : compacts pour tenir dans l'écran ===== */
 .credits{
-  padding:44px 0 20px;
-  font-size:18px;
+  padding:28px 0 0;
+  font-size:16px;
   font-weight:300;
-  letter-spacing:.035em;
-  line-height:1.5;
+  letter-spacing:.03em;
+  line-height:1.35;
 }
 .official{
   color:var(--sand);
-  font-size:15px;
+  font-size:13px;
   letter-spacing:.08em;
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
-.credit{margin:2px 0}
+.credit{margin:1px 0}
 .credit strong{font-weight:500}
 .credit-rule{
-  width:120px;
+  width:105px;
   height:1px;
-  margin:23px auto;
+  margin:16px auto;
   background:linear-gradient(90deg,transparent,var(--accent),transparent);
 }
 .back{
   color:var(--sand);
-  font-size:15px;
+  font-size:13px;
   letter-spacing:.08em;
   text-transform:uppercase;
   text-decoration:none;
   border-bottom:1px solid rgba(214,178,133,.7);
-  padding-bottom:3px;
+  padding-bottom:2px;
 }
 .back:hover{color:var(--ivory)}
+
+/* Téléphones courants */
+@media(max-width:600px){
+  .legend-shell{
+    width:100%;
+  }
+  .hero-top{
+    width:590px;
+    height:40svh;
+  }
+  .hero-bottom{
+    width:590px;
+    height:29svh;
+  }
+  .main{
+    width:min(90%,540px);
+    transform:translateY(2svh);
+  }
+  .eyebrow{
+    font-size:12px;
+    margin-bottom:6px;
+  }
+  .title{
+    font-size:clamp(36px,10vw,49px);
+  }
+  .title-rule{
+    margin:16px auto 19px;
+  }
+  .player{
+    min-height:70px;
+    grid-template-columns:48px 39px minmax(70px,1fr) 39px;
+    padding:8px 12px;
+    gap:7px;
+    border-radius:22px;
+  }
+  .play{
+    width:48px;
+    height:48px;
+  }
+  .play-shape{
+    border-top-width:9px;
+    border-bottom-width:9px;
+    border-left-width:15px;
+  }
+  .time{
+    font-size:15px;
+  }
+  .credits{
+    padding-top:22px;
+    font-size:15px;
+  }
+  .official{
+    font-size:12px;
+    margin-bottom:11px;
+  }
+  .credit-rule{
+    margin:13px auto;
+  }
+  .back{
+    font-size:12px;
+  }
+}
+
+/* Petits écrans / faible hauteur */
+@media(max-height:720px){
+  .hero-top{height:37svh}
+  .hero-bottom{height:25svh}
+  .main{transform:translateY(1svh)}
+  .title{font-size:clamp(34px,8vw,46px)}
+  .title-rule{margin:13px auto 16px}
+  .player{min-height:64px}
+  .credits{padding-top:17px;font-size:14px}
+  .official{font-size:11px;margin-bottom:8px}
+  .credit-rule{margin:10px auto}
+}
 
 /* MENU */
 .menu-page{
