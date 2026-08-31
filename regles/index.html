@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <title>Règles du jeu — Jolly Roger</title>
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=3">
 </head>
 <body>
 <main class="rules-page neutral-mandala">
@@ -13,41 +13,132 @@
   <section class="rules-inner page-layer">
     <p class="menu-brand">JOLLY ROGER</p>
     <h1 class="rules-title">RÈGLES DU JEU</h1>
-    <p class="section-lead">Apprenez le fonctionnement du jeu ou retrouvez rapidement la règle dont vous avez besoin pendant une partie.</p>
+    <p class="section-lead">Toutes les règles essentielles, organisées dans l’ordre d’une partie. Sélectionnez une rubrique ou utilisez l’aide rapide en cours de jeu.</p>
 
     <div class="rules-mode">
       <p class="mode-label">APPRENDRE LES RÈGLES</p>
       <nav class="rules-list">
         <a href="#but"><span>01</span><strong>But du jeu</strong></a>
         <a href="#mise"><span>02</span><strong>Mise en place</strong></a>
-        <a href="#tour"><span>03</span><strong>Déroulement d’un tour</strong></a>
-        <a href="#navigation"><span>04</span><strong>Navigation & déplacements</strong></a>
-        <a href="#ressources"><span>05</span><strong>Ressources & navire</strong></a>
-        <a href="#batailles"><span>06</span><strong>Batailles navales</strong></a>
-        <a href="#dangers"><span>07</span><strong>Dangers & légendes</strong></a>
-        <a href="#evenements"><span>08</span><strong>Événements, bonus & malus</strong></a>
-        <a href="#equipage"><span>09</span><strong>Lieutenants, améliorations & combinaisons</strong></a>
+        <a href="#equipage"><span>03</span><strong>Lieutenants, améliorations & combinaisons</strong></a>
+        <a href="#ressources"><span>04</span><strong>Ressources & navire</strong></a>
+        <a href="#tour"><span>05</span><strong>Déroulement d’un tour</strong></a>
+        <a href="#navigation"><span>06</span><strong>Navigation & déplacements</strong></a>
+        <a href="#evenements"><span>07</span><strong>Événements — Bonus & Malus</strong></a>
+        <a href="#batailles"><span>08</span><strong>Batailles navales</strong></a>
+        <a href="#dangers"><span>09</span><strong>Dangers & Légendes</strong></a>
+        <a href="#fin"><span>10</span><strong>Fin de partie & victoire</strong></a>
       </nav>
     </div>
 
     <div class="quick-help">
       <p class="mode-label">AIDE RAPIDE</p>
       <div class="quick-grid">
-        <a href="#batailles">BATAILLE</a><a href="#ressources">BOULETS</a><a href="#ressources">DÉFENSE</a><a href="#ressources">PIRATES</a><a href="#navigation">DÉPLACEMENT</a><a href="#dangers">DANGER</a><a href="#evenements">ÉVÉNEMENT</a><a href="#equipage">LIEUTENANTS</a>
+        <a href="#batailles">BATAILLE</a><a href="#port">PORT</a><a href="#navigation">DÉPLACEMENT</a><a href="#pirates">PIRATES</a><a href="#boulets">BOULETS</a><a href="#defense">DÉFENSE</a><a href="#dangers">DANGER</a><a href="#legendes">LÉGENDE</a><a href="#evenements">ÉVÉNEMENT</a><a href="#equipage">LIEUTENANTS</a>
       </div>
     </div>
 
-    <section class="rules-preview">
-      <p class="mode-label">APERÇU DE LA STRUCTURE</p>
-      <article id="but"><h2>01 — BUT DU JEU</h2><p>Cette première version installe l’architecture du futur livret numérique. Le texte définitif des règles sera intégré ici après validation, sans modifier l’identité graphique du site.</p></article>
-      <article id="mise"><h2>02 — MISE EN PLACE</h2><p>Préparation du plateau, choix des Capitaines et Lieutenants, ressources et éléments nécessaires au départ de la partie.</p></article>
-      <article id="tour"><h2>03 — DÉROULEMENT D’UN TOUR</h2><p>Une lecture chronologique du tour permettra de retrouver immédiatement l’ordre des actions et leurs exceptions.</p></article>
-      <article id="navigation"><h2>04 — NAVIGATION & DÉPLACEMENTS</h2><p>Déplacements, routes, courants, Ports et effets capables de modifier la navigation.</p></article>
-      <article id="ressources"><h2>05 — RESSOURCES & NAVIRE</h2><p>Pirates, Boulets, Défense et capacités du navire seront regroupés dans une seule rubrique de référence.</p></article>
-      <article id="batailles"><h2>06 — BATAILLES NAVALES</h2><p>Déclenchement, tirs, dégâts et résolution d’une bataille. Cette règle servira ensuite de base au futur module interactif.</p></article>
-      <article id="dangers"><h2>07 — DANGERS & LÉGENDES</h2><p>Accès aux dangers, confrontation aux cinq puissances et acquisition des reliques légendaires.</p></article>
-      <article id="evenements"><h2>08 — ÉVÉNEMENTS, BONUS & MALUS</h2><p>Résolution des cartes immédiates, effets conservés et effets différés.</p></article>
-      <article id="equipage"><h2>09 — LIEUTENANTS, AMÉLIORATIONS & COMBINAISONS</h2><p>Pouvoirs des Lieutenants et progression du navire grâce aux améliorations et combinaisons.</p></article>
+    <section class="rules-content">
+      <article class="rule-chapter" id="but">
+        <div class="chapter-head"><span>01</span><h2>BUT DU JEU</h2></div>
+        <p class="chapter-intro">Prenez la mer, développez votre équipage et affrontez les cinq Dangers afin de vous emparer de leurs Légendes.</p>
+        <div class="rule-block"><h3>LA QUÊTE</h3><p>Wakō, le Diable, Calypso, les Sirènes et le Kraken gardent chacun une Légende. Pour la conquérir, votre équipage doit atteindre leur zone et satisfaire les conditions permettant de les affronter.</p></div>
+        <div class="rule-block"><h3>UNE MER HOSTILE</h3><p>Votre progression dépend de votre navigation, de vos ressources et de vos Lieutenants. Événements, batailles et autres capitaines peuvent bouleverser votre route.</p></div>
+        <div class="rule-note"><strong>OBJECTIF</strong><span>Accumuler les Légendes et s’imposer face aux autres capitaines jusqu’à la condition de victoire de la partie.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="mise">
+        <div class="chapter-head"><span>02</span><h2>MISE EN PLACE</h2></div>
+        <p class="chapter-intro">Avant le premier lancer de dé, préparez le plateau, les cartes et chaque navire.</p>
+        <div class="rule-steps">
+          <div><b>1</b><p><strong>PLATEAU</strong><br>Installez le plateau et placez les éléments liés aux cinq Dangers, aux Ports et aux zones de navigation.</p></div>
+          <div><b>2</b><p><strong>ÉVÉNEMENTS</strong><br>Mélangez ensemble les cartes Bonus et Malus pour former le deck Événements.</p></div>
+          <div><b>3</b><p><strong>CAPITAINES</strong><br>Chaque joueur prend un Capitaine. Son immunité au Danger est active pendant toute la partie.</p></div>
+          <div><b>4</b><p><strong>LIEUTENANTS</strong><br>Procédez au recrutement. En cas de choix identique entre plusieurs joueurs, départagez les prétendants au dé.</p></div>
+          <div><b>5</b><p><strong>NAVIRE</strong><br>Préparez pour chaque joueur ses Pirates, Boulets et Défenses ainsi que les cartes correspondant à ses Lieutenants.</p></div>
+        </div>
+        <div class="rule-note"><strong>CAPITAINES</strong><span>Les cinq Capitaines liés aux Dangers sont immunisés à leur Danger respectif. Roberto Cofresí choisit le Danger auquel il sera immunisé.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="equipage">
+        <div class="chapter-head"><span>03</span><h2>LIEUTENANTS, AMÉLIORATIONS & COMBINAISONS</h2></div>
+        <p class="chapter-intro">Les Lieutenants définissent les spécialités de votre équipage. Leur association peut améliorer durablement le navire ou créer une combinaison.</p>
+        <div class="rule-block"><h3>LES 3 SPÉCIALITÉS</h3><div class="rule-tags"><span>SOLDAT</span><span>NAVIGATEUR</span><span>EXPLORATEUR</span></div><p>Chaque Lieutenant possède un pouvoir propre. Sauf indication contraire, ce pouvoir reste disponible tant qu’aucun effet ne le neutralise.</p></div>
+        <div class="rule-block"><h3>2 LIEUTENANTS DE MÊME SPÉCIALITÉ</h3><div class="rule-equations"><p><strong>2 NAVIGATEURS</strong><span>→</span> TRIPLE VOILE <small>+2 cases à chaque lancer de déplacement</small></p><p><strong>2 EXPLORATEURS</strong><span>→</span> COQUE RENFORCÉE <small>Défense max. 6 + gain immédiat de 2 Défenses</small></p><p><strong>2 SOLDATS</strong><span>→</span> ARTILLERIE LOURDE <small>Boulets max. 5 + gain immédiat de 2 Boulets</small></p></div></div>
+        <div class="rule-block"><h3>2 SPÉCIALITÉS DIFFÉRENTES</h3><div class="rule-equations"><p><strong>SOLDAT + NAVIGATEUR</strong><span>→</span> CORSAIRE <small>Si vous initiez une bataille, votre premier tir ne consomme aucun Boulet.</small></p><p><strong>SOLDAT + EXPLORATEUR</strong><span>→</span> PILLEUR <small>Après une victoire, pillez 1 Pirate ou 1 Boulet supplémentaire si disponible.</small></p><p><strong>NAVIGATEUR + EXPLORATEUR</strong><span>→</span> AVENTURIER <small>Une fois par déplacement, modifiez la distance finale de +1 ou −1.</small></p></div></div>
+        <div class="rule-note"><strong>FIGURE DE PROUE</strong><span>La carte Nouvelle Figure de Proue permet d’obtenir au prochain Port l’une des trois Améliorations. Après utilisation, elle est retirée de la partie.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="ressources">
+        <div class="chapter-head"><span>04</span><h2>RESSOURCES & NAVIRE</h2></div>
+        <p class="chapter-intro">Trois ressources matérialisent l’état de votre navire et de son équipage.</p>
+        <div class="resource-grid">
+          <div id="pirates"><strong>PIRATES</strong><p>Votre équipage. Ils sont nécessaires pour affronter les Dangers. Un navire peut accueillir jusqu’à <b>8 Pirates</b>.</p></div>
+          <div id="boulets"><strong>BOULETS</strong><p>Vos munitions de bataille. Un tir consomme normalement 1 Boulet. Capacité standard : <b>3</b>, ou <b>5</b> avec Artillerie lourde.</p></div>
+          <div id="defense"><strong>DÉFENSE</strong><p>La résistance du navire. Les dégâts reçus réduisent cette réserve. Capacité standard : <b>4</b>, ou <b>6</b> avec Coque renforcée.</p></div>
+        </div>
+        <div class="rule-block" id="port"><h3>LES PORTS</h3><p>Un Port est un sanctuaire : aucune bataille ne peut y être déclenchée. Un joueur ne peut y séjourner qu’un seul tour. Certains Bonus conservés se déclenchent lors de la prochaine escale au Port.</p></div>
+        <div class="rule-note"><strong>CAPACITÉ MAXIMALE</strong><span>Un gain de ressource ne permet jamais de dépasser la capacité actuelle du navire, sauf règle indiquant explicitement le contraire.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="tour">
+        <div class="chapter-head"><span>05</span><h2>DÉROULEMENT D’UN TOUR</h2></div>
+        <p class="chapter-intro">Un tour se lit dans un ordre simple : vérifier les effets en attente, naviguer, puis résoudre la case atteinte.</p>
+        <div class="turn-flow"><div><span>01</span><strong>EFFETS ACTIFS</strong><p>Appliquez les Bonus, Malus ou pouvoirs devant agir au début de ce tour ou sur le prochain déplacement.</p></div><i>↓</i><div><span>02</span><strong>DÉPLACEMENT</strong><p>Lancez le dé et déplacez votre navire du nombre de cases requis, en tenant compte des effets actifs.</p></div><i>↓</i><div><span>03</span><strong>CASE D’ARRIVÉE</strong><p>Résolvez ce qu’elle déclenche : Événement, Port, Danger, rencontre avec un autre navire ou autre effet du plateau.</p></div><i>↓</i><div><span>04</span><strong>FIN DU TOUR</strong><p>Défaussez les effets arrivés à leur terme et conservez ceux qui attendent encore leur déclenchement.</p></div></div>
+        <div class="rule-note"><strong>IMPORTANT</strong><span>Lorsqu’une confrontation avec un Danger est résolue et qu’une Légende est remportée, le tour du joueur prend fin.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="navigation">
+        <div class="chapter-head"><span>06</span><h2>NAVIGATION & DÉPLACEMENTS</h2></div>
+        <p class="chapter-intro">Le résultat du dé détermine une distance à respecter. Le choix de la route appartient ensuite au capitaine.</p>
+        <div class="rule-block"><h3>RÈGLE DE BASE</h3><p>Déplacez votre navire d’un nombre de cases <strong>strictement égal</strong> au résultat du dé, après application des éventuels modificateurs.</p></div>
+        <div class="rule-block"><h3>ARRIVÉE VOLONTAIRE</h3><p>Un Port, un Danger ou la case occupée par un adversaire peut être choisi comme destination lorsqu’il est atteint avec la distance exacte requise.</p></div>
+        <div class="rule-block"><h3>COURANTS & SENS UNIQUES</h3><p>Respectez le sens indiqué par les routes. Sur une voie à double sens, un déplacement ne permet pas de faire immédiatement demi-tour sur la portion que vous venez d’emprunter. Les voies à sens unique doivent être suivies dans leur direction.</p></div>
+        <div class="rule-block"><h3>POUVOIRS DE NAVIGATION</h3><p>Tara Lockwood peut interrompre son déplacement sur n’importe quelle case. Ted Newgate emprunte les voies à sens unique dans les deux sens. Sir Anthonivre ajoute +2 cases à chaque déplacement. Boucanier Thomas est immunisé à Récifs, Mælstrom et Vent contraire.</p></div>
+        <div class="rule-note"><strong>AVENTURIER</strong><span>Avec la combinaison Aventurier, vous pouvez une fois par déplacement modifier la distance finale de +1 ou −1.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="evenements">
+        <div class="chapter-head"><span>07</span><h2>ÉVÉNEMENTS — BONUS & MALUS</h2></div>
+        <p class="chapter-intro">Les cartes Bonus et Malus forment un deck unique. La carte piochée indique toujours quand son effet doit être appliqué.</p>
+        <div class="event-grid"><div><strong>IMMÉDIAT</strong><p>Résolvez l’effet dès la pioche puis défaussez la carte.</p></div><div><strong>À CONSERVER</strong><p>Gardez la carte devant vous jusqu’à la situation indiquée : prochaine bataille, prochain Port, prochain Malus…</p></div><div><strong>PROCHAIN TOUR</strong><p>L’effet reste actif jusqu’au moment précisé, puis la carte est défaussée.</p></div></div>
+        <div class="rule-block"><h3>FIN DU DECK</h3><p>Lorsque le deck Événements est épuisé, mélangez les cartes défaussées pour former un nouveau deck et poursuivez la partie.</p></div>
+        <div class="rule-block"><h3>EXPLORATEURS</h3><p>Monsieur Mot regarde les 2 premières cartes à chaque Événement et choisit celle qui sera jouée. Louise « Jolie-Regard » est immunisée à Cruauté, Mutinerie et Wanted. Mathilda Bertolina est immunisée à Serpent de mer et Goélands géants.</p></div>
+        <div class="rule-note"><strong>LA CARTE FAIT FOI</strong><span>Si un Bonus ou un Malus prévoit une durée ou un moment d’activation particulier, suivez le texte de la carte.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="batailles">
+        <div class="chapter-head"><span>08</span><h2>BATAILLES NAVALES</h2></div>
+        <p class="chapter-intro">Deux navires sur une même case peuvent s’affronter. La bataille se déroule en tirs alternés jusqu’à sa résolution.</p>
+        <div class="rule-steps">
+          <div><b>1</b><p><strong>DÉCLENCHEMENT</strong><br>Le joueur qui rejoint volontairement la case d’un adversaire initie la bataille.</p></div>
+          <div><b>2</b><p><strong>AVANT LA BATAILLE</strong><br>Appliquez les effets qui se déclenchent avant ou au début du combat : Lieutenants, Bonus, Malus et combinaisons.</p></div>
+          <div><b>3</b><p><strong>TIRS ALTERNÉS</strong><br>L’initiateur effectue un tir, puis son adversaire répond. Un tir correspond à un jet de dé et consomme normalement 1 Boulet.</p></div>
+          <div><b>4</b><p><strong>DÉGÂTS</strong><br>Appliquez les bonus, protections et annulations avant de retirer les dégâts réellement subis.</p></div>
+          <div><b>5</b><p><strong>FIN</strong><br>La bataille s’arrête lorsqu’un navire ne peut plus poursuivre le combat, notamment lorsqu’il n’a plus de Boulets ou que sa Défense est épuisée.</p></div>
+          <div><b>6</b><p><strong>PILLAGE</strong><br>Le vainqueur applique les conséquences de victoire. Les Légendes du vaincu peuvent être récupérées ; la combinaison Pilleur ajoute 1 Pirate ou 1 Boulet au pillage si disponible.</p></div>
+        </div>
+        <div class="rule-block"><h3>EFFETS À SURVEILLER</h3><p>Rouille empêche de tirer lors de la prochaine bataille. Malédiction du Crâne fait échouer le premier tir. Équipage menaçant annule le premier tir adverse. Talisman de chance peut annuler jusqu’à 2 pertes de Défense. Certains Lieutenants Soldats modifient également les dégâts ou les pertes.</p></div>
+        <div class="rule-note"><strong>UN TIR = UN JET</strong><span>Les effets sont appliqués au tir concerné avant de passer la main à l’adversaire.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="dangers">
+        <div class="chapter-head"><span>09</span><h2>DANGERS & LÉGENDES</h2></div>
+        <p class="chapter-intro">Cinq puissances règnent sur les mers. Chacune garde une Légende et représente une épreuve différente pour les capitaines.</p>
+        <div class="rule-block"><h3>AFFRONTER UN DANGER</h3><p>Pour tenter un Danger, rejoignez sa zone avec au moins <strong>3 Pirates</strong>. Avec moins de 3 Pirates, vous devez repartir recruter avant de pouvoir le défier.</p></div>
+        <div class="legend-rule-list" id="legendes"><p><strong>WAKŌ</strong><span>LA LARME DU WAKŌ</span></p><p><strong>LE DIABLE</strong><span>LE MURMURE DU DIABLE</span></p><p><strong>CALYPSO</strong><span>LE BAISER DE CALYPSO</span></p><p><strong>LES SIRÈNES</strong><span>LE SANG DES SIRÈNES</span></p><p><strong>LE KRAKEN</strong><span>L’ENCRE DU KRAKEN</span></p></div>
+        <div class="rule-block"><h3>APRÈS LA CONFRONTATION</h3><p>Lorsque le Danger est vaincu, récupérez sa Légende. Votre tour prend fin. Au départ de la zone, vous bénéficiez de l’immunité prévue afin de pouvoir reprendre votre route.</p></div>
+        <div class="rule-block"><h3>INVOQUER UNE LÉGENDE</h3><p>Une Légende peut libérer son pouvoir contre un adversaire : Wakō déplace sa cible jusqu’à 8 cases ; le Diable retire 3 Boulets ; Calypso fait passer le prochain tour ; les Sirènes retirent 3 Pirates ; le Kraken retire 3 Défenses.</p></div>
+        <div class="rule-note"><strong>UTILISATION UNIQUE</strong><span>Une Invocation est immédiate et à usage unique. Une fois son pouvoir utilisé, elle est retirée conformément à la carte.</span></div>
+      </article>
+
+      <article class="rule-chapter" id="fin">
+        <div class="chapter-head"><span>10</span><h2>FIN DE PARTIE & VICTOIRE</h2></div>
+        <p class="chapter-intro">Les Légendes sont au cœur de la victoire : elles peuvent être conquises dans les Dangers mais également changer de main au cours des batailles.</p>
+        <div class="rule-block"><h3>CONSERVER SES LÉGENDES</h3><p>Une Légende acquise n’est pas définitivement à l’abri. Une défaite navale peut permettre à un adversaire de s’en emparer.</p></div>
+        <div class="rule-block"><h3>FIN DE PARTIE</h3><p>La partie s’achève lorsque la condition de victoire prévue par le mode de jeu est atteinte. Les éventuelles règles de fin particulières, dont « La Corde », s’appliquent selon leur carte.</p></div>
+        <div class="rule-note pending"><strong>À VERROUILLER</strong><span>La carterie finale ne détaille pas à elle seule la condition générale de victoire ni toutes les modalités de « La Corde ». Cette partie doit être complétée depuis le dernier livret de règles validé avant d’être considérée comme définitive.</span></div>
+      </article>
     </section>
     <a class="back-home" href="../">← Retour à l’accueil</a>
   </section>
