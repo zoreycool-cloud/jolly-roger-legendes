@@ -2,20 +2,36 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LE DIABLE — Jolly Roger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Murmure du Diable — Jolly Roger</title>
 <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-<main class="card">
-  <div class="brand">JOLLY ROGER</div>
-  <h1>LE DIABLE</h1>
-  <p class="subtitle">Écoutez la légende.</p>
-  <audio controls preload="metadata">
-    <source src="../audio/diable.mp3" type="audio/mpeg">
-    Votre navigateur ne prend pas en charge la lecture audio.
-  </audio>
-  <a class="back" href="../">← Retour aux légendes</a>
+<main class="page" style="--accent:#690000;--bg:url('../assets/backgrounds/diable.png')">
+  <section class="content">
+    <p class="kicker">ÉCOUTER LA LÉGENDE DU</p>
+    <h1>Murmure du Diable</h1>
+    <div class="rule"></div>
+
+    <div class="player" aria-label="Lecteur audio">
+      <button class="play" aria-label="Lecture / pause"></button>
+      <span class="time current">00:00</span>
+      <input class="seek" type="range" min="0" value="0" step="0.1" aria-label="Position de lecture">
+      <span class="time duration">00:00</span>
+    </div>
+    <audio preload="metadata" src="../audio/diable.mp3"></audio>
+
+    <div class="credits">
+      <div class="official">VERSION AUDIO OFFICIELLE DU JEU JOLLY ROGER</div>
+      <p class="credit-line">VOIX. <strong>SAMOO</strong></p>
+      <p class="credit-line">AUTEUR. <strong>ZOREY COOL</strong></p>
+      <p class="credit-line">ENREGISTREMENT/MIXAGE. <strong>M.2.O.</strong></p>
+      <div class="small-rule"></div>
+      <a class="menu" href="../">MENU LÉGENDES JOLLY ROGER</a>
+    </div>
+  </section>
 </main>
+<script src="../assets/player.js"></script>
 </body>
 </html>

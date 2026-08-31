@@ -1,71 +1,136 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Roboto+Condensed:wght@300;400;500&display=swap');
+
 :root{
-  --bg:#0f1720;
-  --panel:#18222d;
-  --text:#f4ead7;
-  --muted:#b8aa91;
-  --accent:#c89b52;
+  --ivory:#fff3d8;
+  --sand:#d6b285;
+  --brown:#7e4e24;
+  --deep:#341f0f;
+  --accent:#935c00;
 }
 *{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#000;color:var(--ivory)}
 body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:linear-gradient(180deg,#0b1118,#141d26);
-  color:var(--text);
-  min-height:100vh;
+  font-family:"Roboto Condensed",Arial,sans-serif;
   display:flex;
-  align-items:center;
   justify-content:center;
-  padding:24px;
 }
-.card{
-  width:min(520px,100%);
-  background:var(--panel);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:22px;
-  padding:34px 24px;
+.page{
+  --bg:none;
+  width:min(100vw,720px);
+  min-height:1280px;
+  position:relative;
+  overflow:hidden;
+  background:#000 var(--bg) top center/100% auto no-repeat;
+}
+.page::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:0; right:0;
+  top:33%;
+  height:33%;
+  background:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%);
+  pointer-events:none;
+}
+.content{
+  position:relative;
+  z-index:2;
+  width:88%;
+  margin:0 auto;
+  padding-top:35.7%;
   text-align:center;
-  box-shadow:0 18px 50px rgba(0,0,0,.35);
 }
-.brand{
-  letter-spacing:.28em;
-  font-size:.78rem;
-  color:var(--muted);
-  margin-bottom:26px;
+.kicker{
+  margin:0 0 .25rem;
+  font-size:clamp(15px,2.7vw,22px);
+  font-weight:300;
+  letter-spacing:.02em;
 }
 h1{
-  margin:0 0 12px;
-  font-size:2.2rem;
+  font-family:"Pirata One",serif;
+  font-weight:400;
+  font-size:clamp(44px,8.2vw,72px);
+  line-height:.95;
+  margin:.15rem 0 1.3rem;
+  color:var(--ivory);
 }
-.subtitle{
-  color:var(--muted);
-  margin:0 0 28px;
+.rule{
+  width:38%;
+  height:1px;
+  margin:0 auto 1.4rem;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
 }
-audio{
-  width:100%;
-  margin-top:10px;
-}
-.back{
-  display:inline-block;
-  margin-top:28px;
-  color:var(--accent);
-  text-decoration:none;
-}
-.home-list{
+.player{
+  border:1px solid var(--sand);
+  border-radius:28px;
+  min-height:76px;
+  padding:12px 20px;
   display:grid;
+  grid-template-columns:58px 50px 1fr 48px;
+  align-items:center;
   gap:12px;
-  margin-top:24px;
+  background:#000;
 }
-.home-list a{
-  display:block;
-  padding:15px 16px;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:14px;
-  color:var(--text);
-  text-decoration:none;
-  background:rgba(255,255,255,.03);
+.play{
+  width:58px;height:58px;border:0;border-radius:50%;
+  background:var(--ivory);cursor:pointer;position:relative;
 }
-.note{
-  margin-top:22px;
-  font-size:.85rem;
-  color:var(--muted);
+.play::after{
+  content:"";
+  position:absolute;left:23px;top:17px;
+  border-left:20px solid var(--deep);
+  border-top:12px solid transparent;
+  border-bottom:12px solid transparent;
+}
+.play.pause::after{
+  left:20px;top:18px;width:18px;height:22px;
+  border:0;
+  border-left:6px solid var(--deep);
+  border-right:6px solid var(--deep);
+}
+.time{font-size:18px;color:var(--sand);font-variant-numeric:tabular-nums}
+.seek{width:100%;accent-color:var(--ivory);cursor:pointer}
+.credits{
+  margin-top:2.6rem;
+  font-size:clamp(15px,2.5vw,20px);
+  font-weight:300;
+  line-height:1.45;
+}
+.official{color:var(--sand);font-size:.82em;margin-bottom:1.15rem}
+.credit-line{margin:.05rem 0}
+.credit-line strong{font-weight:400}
+.small-rule{
+  width:22%;height:1px;margin:1rem auto;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent)
+}
+.menu{
+  color:var(--sand);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  font-size:.82em;
+}
+.menu:hover{color:var(--ivory)}
+.menu-page{
+  min-height:100vh;
+  width:min(100vw,720px);
+  padding:60px 24px;
+  background:radial-gradient(circle at 50% 20%,#341f0f 0,#000 45%);
+  text-align:center;
+}
+.menu-page h1{font-size:64px}
+.legend-links{display:grid;gap:14px;max-width:500px;margin:35px auto}
+.legend-links a{
+  border:1px solid var(--sand);border-radius:18px;padding:18px;
+  color:var(--ivory);text-decoration:none;font-family:"Pirata One";font-size:32px;
+}
+.legend-links a:hover{background:#120b06}
+@media(max-width:520px){
+  .page{min-height:100vh}
+  .content{width:90%;padding-top:35%}
+  .player{grid-template-columns:52px 44px 1fr 42px;padding:10px 12px;gap:7px}
+  .play{width:52px;height:52px}
+  .play::after{left:21px;top:15px}
+  .time{font-size:15px}
+  .credits{margin-top:2rem}
 }
