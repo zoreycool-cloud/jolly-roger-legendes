@@ -1,276 +1,73 @@
 (()=>{
-  const root=document.getElementById('jrBattleApp');
-  if(!root)return;
-  const qs=(s,p=root)=>p.querySelector(s), qsa=(s,p=root)=>[...p.querySelectorAll(s)];
-
-  const legendCatalog=[
-    {id:'wako',name:'LARME DU WAKŌ',entity:'LE WAKŌ',invocation:'LARME DU WAKŌ',img:'invocation-larme-du-wako.jpg'},
-    {id:'diable',name:'MURMURE DU DIABLE',entity:'LE DIABLE',invocation:'MURMURE DU DIABLE',img:'invocation-murmure-du-diable.jpg'},
-    {id:'calypso',name:'BAISER DE CALYPSO',entity:'CALYPSO',invocation:'BAISER DE CALYPSO',img:'invocation-baiser-de-calypso.jpg'},
-    {id:'sirenes',name:'SANG DES SIRÈNES',entity:'LES SIRÈNES',invocation:'SANG DES SIRÈNES',img:'invocation-sang-des-sirenes.jpg'},
-    {id:'kraken',name:'L’ENCRE DU KRAKEN',entity:'LE KRAKEN',invocation:'L’ENCRE DU KRAKEN',img:'invocation-encre-du-kraken.jpg'}
-  ];
-
-  const state={
-    name:'HUGO',pirates:4,piratesMax:8,defenses:1,defensesMax:4,boulets:3,bouletsMax:3,
-    bonus:[],malus:[],legends:[],journal:[{t:'20:42',txt:'Partie créée — code KRAKEN-72'}]
-  };
-
-  const cards={
-    bonus:[
-      ['NAUFRAGÉ','bonus-naufrage.jpg','immediate','pirates',1],
-      ['VIEUX RADEAU','bonus-vieux-radeau.jpg','immediate','defenses',1],
-      ['ÉPAVE DE BATEAU PIRATE','bonus-epave-bateau-pirate.jpg','dual','defenses',1],
-      ['SERVICE RENDU','bonus-service-rendu.jpg','store'],
-      ['GROS BUTIN','bonus-gros-butin.jpg','store'],
-      ['TALISMAN DE CHANCE','bonus-talisman-chance.jpg','store'],
-      ['ÉQUIPAGE SOUDÉ','bonus-equipage-soude.jpg','store'],
-      ['MALICE DE LA MOUETTE','bonus-malice-mouette.jpg','store']
-    ],
-    malus:[
-      ['RÉCIFS','malus-recifs.jpg','immediate','defenses',-1],
-      ['SERPENT DE MER','malus-serpent-de-mer.jpg','serpent'],
-      ['MUTINERIE','malus-mutinerie.jpg','immediate','pirates',-2],
-      ['ROUILLE','malus-rouille.jpg','active'],
-      ['VENT CONTRAIRE','malus-vent-contraire.jpg','active'],
-      ['SCORBUT','malus-scorbut.jpg','active'],
-      ['MALÉDICTION DU CRÂNE','malus-malediction-crane.jpg','active']
-    ]
-  };
-
-  const opponents=[
-    {name:'CHARLES',pirates:5,piratesMax:8,defenses:3,defensesMax:4,boulets:2,bouletsMax:3,bonus:2,malus:['ROUILLE'],legends:[{id:'kraken',used:false}]},
-    {name:'MATHIS',pirates:6,piratesMax:8,defenses:2,defensesMax:4,boulets:1,bouletsMax:3,bonus:1,malus:[],legends:[{id:'wako',used:true}]},
-    {name:'QUENTIN',pirates:4,piratesMax:8,defenses:0,defensesMax:4,boulets:3,bouletsMax:3,bonus:2,malus:[],legends:[]}
-  ];
-
-  function showScreen(name){qsa('.jr-screen').forEach(x=>x.classList.toggle('is-active',x.dataset.screen===name));window.scrollTo({top:0,behavior:'smooth'});}
-  qsa('[data-go]').forEach(b=>b.addEventListener('click',()=>showScreen(b.dataset.go)));
-  qs('#hostName').addEventListener('input',e=>{qs('#hostPreview').textContent=(e.target.value||'HUGO').toUpperCase()});
-  qs('#startGameBtn').addEventListener('click',()=>{state.name=(qs('#hostName').value||'HUGO').trim().toUpperCase();addLog(`${state.name} démarre la partie`);showScreen('game');render();});
-  qs('#joinGameBtn').addEventListener('click',()=>{const code=qs('#joinCode').value.trim(),name=qs('#joinName').value.trim();if(!code||!name){qs('#joinValidation').textContent='INDIQUEZ UN CODE ET VOTRE NOM.';return;}state.name=name.toUpperCase();addLog(`${state.name} rejoint la partie ${code.toUpperCase()}`);showScreen('game');render();});
-
-  function addLog(txt){const now=new Date();state.journal.unshift({t:String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'),txt});}
-  function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
-  function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-  function legendById(id){return legendCatalog.find(x=>x.id===id);}
-  function cardByName(name){return cards.bonus.find(x=>x[0]===name);}
-
-  function render(){
-    qs('#piratesCount').textContent=`${state.pirates} / ${state.piratesMax}`;
-    qs('#defensesCount').textContent=`${state.defenses} / ${state.defensesMax}`;
-    qs('#bouletsCount').textContent=`${state.boulets} / ${state.bouletsMax}`;
-    qs('#bonusCount').textContent=`${state.bonus.length} / 4`;
-  }
-
-  const sheet=qs('#jrSheet'),title=qs('#sheetTitle'),content=qs('#sheetContent');
-  function openSheet(kind){sheet.hidden=false;document.body.style.overflow='hidden';renderPanel(kind);}
-  function closeSheet(){sheet.hidden=true;document.body.style.overflow='';}
-  qsa('[data-close-sheet]').forEach(x=>x.addEventListener('click',closeSheet));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)closeSheet();});
-  qsa('[data-panel]').forEach(b=>b.addEventListener('click',()=>openSheet(b.dataset.panel)));
-
-  function renderPanel(kind){
-    if(kind==='actions')return actionsPanel();
-    if(kind==='opponents')return opponentsPanel();
-    if(kind==='journal')return journalPanel();
-    if(kind==='cards')return cardsPanel();
-    if(kind==='ship')return shipPanel();
-    if(kind==='event')return eventPanel('bonus');
-  }
-
-  function actionsPanel(){
-    title.textContent='QUE VIENT-IL DE SE PASSER ?';
-    content.innerHTML=`<div class="jr-action-grid">
-      <button data-act="event"><span>▱</span>CARTE ÉVÉNEMENT</button>
-      <button data-act="battle"><span>⚔</span>BATAILLE NAVALE</button>
-      <button data-act="port"><span>⚓</span>ENTRER DANS UN PORT</button>
-      <button data-act="legend"><span>◇</span>DANGER / LÉGENDE</button>
-      <button data-act="trade"><span>⇄</span>ÉCHANGE / TRANSFERT</button>
-      <button data-act="other"><span>•••</span>AUTRE</button>
-    </div>`;
-    qsa('[data-act]',content).forEach(b=>b.addEventListener('click',()=>{
-      const act=b.dataset.act;
-      if(act==='event')eventPanel('bonus');
-      else if(act==='battle')battlePanel();
-      else if(act==='port')portPanel();
-      else if(act==='legend')legendPanel();
-      else if(act==='trade')tradePanel();
-      else infoPanel('AUTRE ACTION');
-    }));
-  }
-
-  function infoPanel(name){
-    title.textContent=name;
-    content.innerHTML=`<p class="jr-lead" style="margin:24px auto">Cette catégorie reste volontairement libre pour les cas qui ne sont pas encore automatisés.</p><button class="jr-secondary" type="button" data-back-actions>RETOUR AUX ACTIONS</button>`;
-    qs('[data-back-actions]',content).addEventListener('click',actionsPanel);
-  }
-
-  function eventPanel(tab){
-    title.textContent='CARTE ÉVÉNEMENT';let selected=null;
-    content.innerHTML=`<div class="jr-tabs"><button class="${tab==='bonus'?'is-active':''}" data-tab="bonus">BONUS</button><button class="${tab==='malus'?'is-active':''}" data-tab="malus">MALUS</button></div><div class="jr-card-strip" id="eventCards"></div><p class="jr-card-name" id="eventCardName">SÉLECTIONNEZ LA CARTE PIOCHÉE</p><div class="jr-apply-row"><button class="jr-primary" id="applyEvent" disabled>APPLIQUER</button><button class="jr-secondary" type="button" id="backActions">RETOUR</button></div>`;
-    qsa('[data-tab]',content).forEach(b=>b.addEventListener('click',()=>eventPanel(b.dataset.tab)));
-    const strip=qs('#eventCards',content);
-    cards[tab].forEach((c,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='jr-card-choice';btn.innerHTML=`<img src="../assets/cards/${c[1]}" alt="${esc(c[0])}" loading="lazy">`;btn.addEventListener('click',()=>{qsa('.jr-card-choice',strip).forEach(x=>x.classList.remove('is-selected'));btn.classList.add('is-selected');selected=i;qs('#eventCardName',content).textContent=c[0];qs('#applyEvent',content).disabled=false;});strip.appendChild(btn);});
-    qs('#backActions',content).addEventListener('click',actionsPanel);
-    qs('#applyEvent',content).addEventListener('click',()=>{if(selected===null)return;applyCard(tab,cards[tab][selected]);});
-  }
-
-  function applyCard(type,c){
-    const [name,,mode,res,val]=c;let result='';
-    if(type==='bonus'){
-      if(mode==='store'){
-        if(state.bonus.length>=4){return bonusReplacementPanel(c);}
-        state.bonus.push(name);result=`${name} ajouté à vos Bonus secrets.`;addLog(`${state.name} pioche un Bonus — ${state.bonus.length} Bonus en main`);
-      }else if(mode==='immediate'){
-        const before=state[res],max=state[res+'Max'];state[res]=clamp(before+val,0,max);result=`${res==='pirates'?'Pirates':'Défenses'} : ${before} → ${state[res]}`;addLog(`${state.name} applique un Bonus : ${name}`);
-      }else if(mode==='dual'){
-        const d=state.defenses,b=state.boulets;state.defenses=clamp(d+1,0,state.defensesMax);state.boulets=clamp(b+1,0,state.bouletsMax);result=`Défenses ${d} → ${state.defenses} · Boulets ${b} → ${state.boulets}`;addLog(`${state.name} applique un Bonus : ${name}`);
-      }
-    }else{
-      if(mode==='immediate'){
-        const before=state[res];state[res]=clamp(before+val,0,state[res+'Max']);result=`${res==='pirates'?'Pirates':'Défenses'} : ${before} → ${state[res]}`;addLog(`${state.name} pioche le Malus ${name} — ${result}`);
-      }else if(mode==='serpent'){
-        const d=state.defenses,p=state.pirates;state.defenses=clamp(d-1,0,state.defensesMax);state.pirates=clamp(p-1,0,state.piratesMax);result=`Défenses ${d} → ${state.defenses} · Pirates ${p} → ${state.pirates}`;addLog(`${state.name} pioche le Malus ${name} — ${result}`);
-      }else{
-        state.malus.push(name);result=`${name} est désormais un effet actif public.`;addLog(`${state.name} pioche le Malus ${name}`);
-      }
-    }
-    render();actionResult(name,result);
-  }
-
-  function bonusReplacementPanel(newCard){
-    const [newName,newImg]=newCard;
-    title.textContent='MAIN DE BONUS COMPLÈTE';
-    content.innerHTML=`<p class="jr-lead">Vous avez déjà 4 Bonus. Vous pouvez défausser le nouveau Bonus ou remplacer l’un de vos Bonus actuels.</p>
-      <div class="jr-new-bonus"><small>NOUVEAU BONUS</small><div class="jr-private-card"><img src="../assets/cards/${newImg}" alt="${esc(newName)}"><div><strong>${esc(newName)}</strong><small>RESTE SECRET POUR LES ADVERSAIRES</small></div></div></div>
-      <p class="jr-card-name">REMPLACER QUEL BONUS ?</p><div class="jr-replace-list" id="replaceList"></div>
-      <button class="jr-secondary" type="button" id="discardNewBonus">DÉFAUSSER LE NOUVEAU BONUS</button>`;
-    const list=qs('#replaceList',content);
-    state.bonus.forEach((oldName,index)=>{
-      const oldCard=cardByName(oldName);const btn=document.createElement('button');btn.type='button';btn.className='jr-replace-choice';btn.innerHTML=`<img src="../assets/cards/${oldCard?oldCard[1]:'bonus-vieux-radeau.jpg'}" alt="${esc(oldName)}"><span><strong>${esc(oldName)}</strong><small>REMPLACER PAR ${esc(newName)}</small></span>`;
-      btn.addEventListener('click',()=>{const removed=state.bonus[index];state.bonus[index]=newName;addLog(`${state.name} remplace 1 Bonus — 4 Bonus en main`);render();actionResult('BONUS REMPLACÉ',`${removed} a été défaussé. ${newName} rejoint votre main secrète.`);});list.appendChild(btn);
-    });
-    qs('#discardNewBonus',content).addEventListener('click',()=>{addLog(`${state.name} défausse le Bonus pioché — 4 Bonus en main`);actionResult('BONUS DÉFAUSSÉ',`${newName} n’a pas été ajouté. Votre main reste à 4 Bonus.`);});
-  }
-
-  function actionResult(name,result){
-    title.textContent='ACTION APPLIQUÉE';
-    content.innerHTML=`<div class="jr-event-result"><strong>${esc(name)}</strong><span>${esc(result)}</span></div><button class="jr-primary" type="button" id="doneEvent">TERMINER</button>`;
-    qs('#doneEvent',content).addEventListener('click',closeSheet);
-  }
-
-  function portPanel(){
-    title.textContent='ENTRER DANS UN PORT';
-    const service=state.bonus.includes('SERVICE RENDU');
-    const gros=state.bonus.includes('GROS BUTIN');
-    let suggestions='';
-    if(service||gros){
-      suggestions='<div class="jr-context-box"><small>EFFETS DÉTECTÉS</small>';
-      if(service)suggestions+='<button type="button" data-port-bonus="SERVICE RENDU">SERVICE RENDU · refaire le plein de Boulets</button>';
-      if(gros)suggestions+='<button type="button" data-port-bonus="GROS BUTIN">GROS BUTIN · +2 Boulets et +2 Défenses</button>';
-      suggestions+='</div>';
-    }
-    content.innerHTML=`<p class="jr-lead">Confirmez l’arrivée de votre navire au Port. Le moteur vérifie les effets de votre main qui se déclenchent au Port.</p>${suggestions}<button class="jr-primary" type="button" id="confirmPort">CONFIRMER L’ENTRÉE AU PORT</button><button class="jr-secondary" type="button" id="backActions">RETOUR</button>`;
-    qsa('[data-port-bonus]',content).forEach(btn=>btn.addEventListener('click',()=>usePortBonus(btn.dataset.portBonus)));
-    qs('#confirmPort',content).addEventListener('click',()=>{addLog(`${state.name} entre dans un Port`);actionResult('PORT','Entrée au Port enregistrée. Les effets applicables restent disponibles jusqu’à leur utilisation.');});
-    qs('#backActions',content).addEventListener('click',actionsPanel);
-  }
-
-  function usePortBonus(name){
-    const idx=state.bonus.indexOf(name);if(idx<0)return;
-    let result='';
-    if(name==='SERVICE RENDU'){
-      const before=state.boulets;state.boulets=state.bouletsMax;result=`Boulets : ${before} → ${state.boulets}`;
-    }else if(name==='GROS BUTIN'){
-      const b=state.boulets,d=state.defenses;state.boulets=clamp(b+2,0,state.bouletsMax);state.defenses=clamp(d+2,0,state.defensesMax);result=`Boulets ${b} → ${state.boulets} · Défenses ${d} → ${state.defenses}`;
-    }
-    state.bonus.splice(idx,1);addLog(`${state.name} révèle et utilise ${name} au Port`);render();actionResult(name,result);
-  }
-
-  function legendPanel(){
-    title.textContent='DANGER / LÉGENDE';
-    content.innerHTML=`<p class="jr-lead">Sélectionnez la Légende remportée. Son Invocation est automatiquement liée à la Légende et enregistrée comme disponible.</p><div class="jr-legend-grid" id="legendGrid"></div><button class="jr-secondary" type="button" id="backActions">RETOUR</button>`;
-    const grid=qs('#legendGrid',content);
-    legendCatalog.forEach(l=>{const owned=state.legends.some(x=>x.id===l.id);const btn=document.createElement('button');btn.type='button';btn.className='jr-legend-choice';btn.disabled=owned;btn.innerHTML=`<img src="../assets/cards/${l.img}" alt="${esc(l.invocation)}"><span><strong>${esc(l.entity)}</strong><small>${owned?'DÉJÀ À BORD':'INVOCATION : '+esc(l.invocation)}</small></span>`;btn.addEventListener('click',()=>gainLegend(l));grid.appendChild(btn);});
-    qs('#backActions',content).addEventListener('click',actionsPanel);
-  }
-
-  function gainLegend(l){
-    if(state.legends.some(x=>x.id===l.id))return;
-    state.legends.push({id:l.id,used:false});addLog(`${state.name} remporte la Légende liée à ${l.entity}`);actionResult('LÉGENDE REMPORTÉE',`${l.entity} rejoint votre navire. Invocation disponible : ${l.invocation}.`);
-  }
-
-  function tradePanel(){
-    title.textContent='ÉCHANGE / TRANSFERT';
-    content.innerHTML=`<p class="jr-lead">Prototype local : enregistrez ici un transfert de ressource vers un joueur avec lequel l’échange est autorisé par les règles de votre partie.</p>
-      <label class="jr-field">DESTINATAIRE<select id="tradeTarget">${opponents.map((o,i)=>`<option value="${i}">${esc(o.name)}</option>`).join('')}</select></label>
-      <label class="jr-field">RESSOURCE<select id="tradeResource"><option value="pirates">PIRATE</option><option value="defenses">DÉFENSE</option><option value="boulets">BOULET</option></select></label>
-      <label class="jr-field">QUANTITÉ<select id="tradeAmount"><option>1</option><option>2</option><option>3</option></select></label>
-      <button class="jr-primary" type="button" id="confirmTrade">VALIDER LE TRANSFERT</button><button class="jr-secondary" type="button" id="backActions">RETOUR</button><p class="jr-validation" id="tradeValidation"></p>`;
-    qs('#confirmTrade',content).addEventListener('click',()=>{
-      const target=opponents[Number(qs('#tradeTarget',content).value)],res=qs('#tradeResource',content).value,amount=Number(qs('#tradeAmount',content).value),label=res==='pirates'?'Pirate':res==='defenses'?'Défense':'Boulet';
-      if(state[res]<amount){qs('#tradeValidation',content).textContent=`RESSOURCE INSUFFISANTE : ${state[res]} DISPONIBLE(S).`;return;}
-      const maxKey=res+'Max';if(target[res]+amount>target[maxKey]){qs('#tradeValidation',content).textContent=`CAPACITÉ DE ${target.name} DÉPASSÉE.`;return;}
-      state[res]-=amount;target[res]+=amount;addLog(`${state.name} transfère ${amount} ${label}${amount>1?'s':''} à ${target.name}`);render();actionResult('TRANSFERT ENREGISTRÉ',`${amount} ${label}${amount>1?'s':''} transféré${amount>1?'s':''} à ${target.name}.`);
-    });
-    qs('#backActions',content).addEventListener('click',actionsPanel);
-  }
-
-  function battlePanel(){
-    title.textContent='BATAILLE NAVALE';
-    content.innerHTML=`<p class="jr-lead">Choisissez le navire adverse. Ce prototype active déjà la résolution de base des tirs ; les pouvoirs, Bonus/Malus et priorités avancées seront branchés progressivement au moteur.</p><div class="jr-list" id="battleTargets">${opponents.map((o,i)=>`<button class="jr-target-row" type="button" data-target="${i}"><span><strong>${esc(o.name)}</strong><small>☠ ${o.pirates}/${o.piratesMax} · ◇ ${o.defenses}/${o.defensesMax} · ● ${o.boulets}/${o.bouletsMax}</small></span><em>COMBATTRE</em></button>`).join('')}</div><button class="jr-secondary" type="button" id="backActions">RETOUR</button>`;
-    qsa('[data-target]',content).forEach(btn=>btn.addEventListener('click',()=>battleRound(Number(btn.dataset.target),true)));
-    qs('#backActions',content).addEventListener('click',actionsPanel);
-  }
-
-  function battleRound(index,myTurn){
-    const foe=opponents[index];title.textContent=`BATAILLE — ${state.name} VS ${foe.name}`;
-    const shooter=myTurn?state:foe,target=myTurn?foe:state;
-    const shooterName=myTurn?state.name:foe.name;
-    content.innerHTML=`<div class="jr-duel"><div><small>${esc(state.name)}</small><strong>◇ ${state.defenses}/${state.defensesMax} · ● ${state.boulets}/${state.bouletsMax}</strong></div><span>VS</span><div><small>${esc(foe.name)}</small><strong>◇ ${foe.defenses}/${foe.defensesMax} · ● ${foe.boulets}/${foe.bouletsMax}</strong></div></div><p class="jr-card-name">TIR DE ${esc(shooterName)}</p><p class="jr-note">Indiquez le résultat du dé physique.</p><div class="jr-dice-grid">${[1,2,3,4,5,6].map(n=>`<button type="button" data-die="${n}" ${shooter.boulets<=0?'disabled':''}>${n}</button>`).join('')}</div>${shooter.boulets<=0?'<p class="jr-validation">AUCUN BOULET DISPONIBLE POUR CE TIR.</p>':''}<button class="jr-secondary" type="button" id="endBattle">TERMINER LA BATAILLE</button>`;
-    qsa('[data-die]',content).forEach(btn=>btn.addEventListener('click',()=>resolveShot(index,myTurn,Number(btn.dataset.die))));
-    qs('#endBattle',content).addEventListener('click',()=>{addLog(`Bataille ${state.name} / ${foe.name} terminée dans le prototype`);closeSheet();});
-  }
-
-  function resolveShot(index,myTurn,die){
-    const foe=opponents[index],shooter=myTurn?state:foe,target=myTurn?foe:state,shooterName=myTurn?state.name:foe.name,targetName=myTurn?foe.name:state.name;
-    if(shooter.boulets<=0)return;
-    shooter.boulets=clamp(shooter.boulets-1,0,shooter.bouletsMax);const hit=die>=3;const before=target.defenses;if(hit)target.defenses=clamp(target.defenses-1,0,target.defensesMax);
-    addLog(`${shooterName} tire (${die}) — ${hit?'touché':'raté'}${hit?` · Défense ${targetName} ${before} → ${target.defenses}`:''}`);render();
-    if(target.defenses<=0){title.textContent='BATAILLE TERMINÉE';content.innerHTML=`<div class="jr-event-result"><strong>${esc(shooterName)} REMPORTE LA BATAILLE</strong><span>${esc(targetName)} n’a plus de Défense.</span></div><button class="jr-primary" type="button" id="doneBattle">TERMINER</button>`;qs('#doneBattle',content).addEventListener('click',closeSheet);return;}
-    battleRound(index,!myTurn);
-  }
-
-  function opponentsPanel(){
-    title.textContent='ADVERSAIRES — ÉTAT PUBLIC';
-    content.innerHTML='<div class="jr-list">'+opponents.map((o,i)=>`<button class="jr-target-row" type="button" data-opponent="${i}"><span><strong>${esc(o.name)}</strong><small>☠ ${o.pirates}/${o.piratesMax} · ◇ ${o.defenses}/${o.defensesMax} · ● ${o.boulets}/${o.bouletsMax}</small></span><em>${o.bonus} BONUS · ${o.legends.length} LÉGENDE${o.legends.length>1?'S':''}</em></button>`).join('')+'</div><p class="jr-note">Touchez un adversaire pour consulter ses informations publiques. L’identité des Bonus reste privée.</p>';
-    qsa('[data-opponent]',content).forEach(btn=>btn.addEventListener('click',()=>opponentDetail(Number(btn.dataset.opponent))));
-  }
-
-  function opponentDetail(index){
-    const o=opponents[index];title.textContent=`${o.name} — ÉTAT PUBLIC`;
-    const legends=o.legends.length?o.legends.map(x=>{const l=legendById(x.id);return `<div class="jr-list-row"><div><strong>${esc(l.entity)}</strong><small>INVOCATION : ${esc(l.invocation)}</small></div><em>${x.used?'UTILISÉE':'DISPONIBLE'}</em></div>`;}).join(''):'<p class="jr-note">Aucune Légende à bord.</p>';
-    const malus=o.malus.length?o.malus.map(x=>`<div class="jr-list-row"><strong>${esc(x)}</strong><em>PUBLIC</em></div>`).join(''):'<p class="jr-note">Aucun Malus actif.</p>';
-    content.innerHTML=`<div class="jr-list"><div class="jr-list-row"><strong>PIRATES</strong><em>${o.pirates} / ${o.piratesMax}</em></div><div class="jr-list-row"><strong>DÉFENSES</strong><em>${o.defenses} / ${o.defensesMax}</em></div><div class="jr-list-row"><strong>BOULETS</strong><em>${o.boulets} / ${o.bouletsMax}</em></div><div class="jr-list-row"><strong>BONUS EN MAIN</strong><em>${o.bonus}</em></div></div><h3 class="jr-subhead">LÉGENDES & INVOCATIONS</h3>${legends}<h3 class="jr-subhead">MALUS ACTIFS</h3>${malus}<button class="jr-secondary" type="button" id="backOpponents">RETOUR AUX ADVERSAIRES</button>`;
-    qs('#backOpponents',content).addEventListener('click',opponentsPanel);
-  }
-
-  function journalPanel(){title.textContent='JOURNAL DE PARTIE';content.innerHTML='<ul class="jr-journal">'+state.journal.map(x=>`<li><time>${esc(x.t)}</time><span>${esc(x.txt)}</span></li>`).join('')+'</ul>';}
-
-  function cardsPanel(){
-    title.textContent='MES CARTES';
-    const bonus=state.bonus.length?state.bonus.map(name=>{const c=cardByName(name);return `<div class="jr-private-card"><img src="../assets/cards/${c?c[1]:'bonus-vieux-radeau.jpg'}" alt="${esc(name)}"><div><strong>${esc(name)}</strong><small>BONUS SECRET · visible uniquement par vous</small></div></div>`;}).join(''):'<p class="jr-lead" style="margin:24px auto">Aucun Bonus secret en main.</p>';
-    const malus=state.malus.length?'<h3 class="jr-subhead">MALUS ACTIFS — PUBLICS</h3>'+state.malus.map(x=>`<div class="jr-list-row"><strong>${esc(x)}</strong><em>ACTIF</em></div>`).join(''):'';
-    const legends=state.legends.length?'<h3 class="jr-subhead">LÉGENDES & INVOCATIONS</h3>'+state.legends.map(x=>{const l=legendById(x.id);return `<div class="jr-list-row"><div><strong>${esc(l.entity)}</strong><small>${esc(l.invocation)}</small></div><em>${x.used?'UTILISÉE':'DISPONIBLE'}</em></div>`;}).join(''):'';
-    content.innerHTML=bonus+malus+legends;
-  }
-
-  function shipPanel(){
-    title.textContent='ÉTAT DU NAVIRE';
-    const legends=state.legends.length?state.legends.map(x=>{const l=legendById(x.id);return `<div class="jr-list-row"><div><strong>${esc(l.entity)}</strong><small>INVOCATION : ${esc(l.invocation)}</small></div><em>${x.used?'UTILISÉE':'DISPONIBLE'}</em></div>`;}).join(''):'<p class="jr-note">Aucune Légende à bord.</p>';
-    content.innerHTML=`<div class="jr-list"><div class="jr-list-row"><strong>PIRATES</strong><em>${state.pirates} / ${state.piratesMax}</em></div><div class="jr-list-row"><strong>DÉFENSES</strong><em>${state.defenses} / ${state.defensesMax}</em></div><div class="jr-list-row"><strong>BOULETS</strong><em>${state.boulets} / ${state.bouletsMax}</em></div><div class="jr-list-row"><strong>BONUS</strong><em>${state.bonus.length} / 4</em></div><div class="jr-list-row"><strong>MALUS ACTIFS</strong><em>${state.malus.length}</em></div></div><h3 class="jr-subhead">LÉGENDES & INVOCATIONS</h3>${legends}<p class="jr-note">Visuel navire à paraître prochainement.</p>`;
-  }
-
-  render();
+const root=document.getElementById('jrBattleApp'); if(!root)return;
+const qs=(s,p=root)=>p.querySelector(s), qsa=(s,p=root)=>[...p.querySelectorAll(s)];
+const A='../assets/cards/';
+const captains=[
+['SUMISHURI SHANZEN','capitaine-sumishuri-shanzen.jpg','Immunisé au Danger du Wakō.'],['MAHAWA OWONA','capitaine-mahawa-owona.jpg','Immunisée au Danger de Calypso.'],['ABU YAZID','capitaine-abu-yazid.jpg','Immunisé au Danger des Sirènes.'],['CHARLES VERJUS','capitaine-charles-verjus.jpg','Immunisé au Danger du Diable.'],['YVIE KRISTIANSEN','capitaine-yvie-kristiansen.jpg','Immunisée au Danger du Kraken.'],['ROBERTO COFRESÍ','capitaine-roberto-cofresi.jpg','Immunisé à un Danger de son choix.']];
+const lieutenants=[
+['SERENA STEELBREAKER','soldat','lieutenant-serena-steelbreaker.jpg','Une fois par bataille, une touche peut infliger 2 dégâts.'],['BARBE BLEUE','soldat','lieutenant-barbe-bleue.jpg','Au début de chaque bataille, l’adversaire perd 1 Pirate.'],['HUGEULIN PIERRUS','soldat','lieutenant-hugeulin-pierrus.jpg','Une fois par bataille, annule 1 dégât subi.'],['PERTH HAMILTON','soldat','lieutenant-perth-hamilton.jpg','Vos Pirates ne peuvent pas être perdus à cause d’une bataille navale.'],
+['MONSIEUR MOT','explorateur','lieutenant-monsieur-mot.jpg','À chaque Événement, choisissez l’une des 2 premières cartes.'],['OLIVIER « LA BUSE »','explorateur','lieutenant-olivier-la-buse.jpg','Avant une bataille, inspecte les Bonus adverses et en neutralise un.'],['LOUISE « JOLIE-REGARD »','explorateur','lieutenant-louise-jolie-regard.jpg','Immunisée à Cruauté, Mutinerie et Wanted.'],['MATHILDA BERTOLINA','explorateur','lieutenant-mathilda-bertolina.jpg','Immunisée à Serpent de mer et Goélands géants.'],
+['TARA LOCKWOOD','navigateur','lieutenant-tara-lockwood.jpg','Peut interrompre le déplacement sur n’importe quelle case.'],['TED NEWGATE','navigateur','lieutenant-ted-newgate.jpg','Peut utiliser les routes à sens unique dans les deux sens.'],['SIR ANTHONIVRE','navigateur','lieutenant-sir-anthonivre.jpg','+2 cases à chaque déplacement.'],['BOUCANIER THOMAS','navigateur','lieutenant-boucanier-thomas.jpg','Immunisé à Récifs, Mælstrom et Vent contraire.']];
+const legends=[['wako','LE WAKŌ','LARME DU WAKŌ','invocation-larme-du-wako.jpg'],['diable','LE DIABLE','MURMURE DU DIABLE','invocation-murmure-du-diable.jpg'],['calypso','CALYPSO','BAISER DE CALYPSO','invocation-baiser-de-calypso.jpg'],['sirenes','LES SIRÈNES','SANG DES SIRÈNES','invocation-sang-des-sirenes.jpg'],['kraken','LE KRAKEN','L’ENCRE DU KRAKEN','invocation-encre-du-kraken.jpg']];
+const bonus=[
+['VIEUX RADEAU','bonus-vieux-radeau.jpg','immediate','defenses',1],['VENT FAVORABLE','bonus-vent-favorable.jpg','store'],['NAUFRAGÉ','bonus-naufrage.jpg','immediate','pirates',1],['ÉPAVE DE BATEAU PIRATE','bonus-epave-bateau-pirate.jpg','epave'],['ÉPAVE DE LA MARINE','bonus-epave-marine.jpg','marine'],['SERVICE RENDU','bonus-service-rendu.jpg','store'],['PETIT BUTIN','bonus-petit-butin.jpg','store'],['GROS BUTIN','bonus-gros-butin.jpg','store'],['HUILE DE BALEINE','bonus-huile-baleine.jpg','store'],['REMÈDE DE PIRATE','bonus-remede-pirate.jpg','store'],['BONNE RÉPUTATION','bonus-bonne-reputation.jpg','store'],['CHANTS DE PIRATE','bonus-chants-pirate.jpg','store'],['PHARE ÉCLAIRÉ','bonus-phare-eclaire.jpg','store'],['ÉQUIPAGE SOUDÉ','bonus-equipage-soude.jpg','store'],['ZOOLOGIE','bonus-zoologie.jpg','store'],['LAISSEZ-PASSER','bonus-laissez-passer.jpg','store'],['PATTE DE CHAT','bonus-patte-de-chat.jpg','store'],['MALICE DE LA MOUETTE','bonus-malice-mouette.jpg','store'],['NOUVELLE FIGURE DE PROUE','bonus-nouvelle-figure-proue.jpg','store'],['TALISMAN DE CHANCE','bonus-talisman-chance.jpg','store'],['ÉQUIPAGE MENAÇANT','bonus-equipage-menacant.jpg','store']];
+const malus=[
+['RÉCIFS','malus-recifs.jpg','immediate','defenses',-1],['VENT CONTRAIRE','malus-vent-contraire.jpg','active'],['SCORBUT','malus-scorbut.jpg','active'],['WANTED','malus-wanted.jpg','active'],['GOÉLANDS GÉANTS','malus-goelands-geants.jpg','active'],['SERPENT DE MER','malus-serpent-de-mer.jpg','serpent'],['MUTINERIE','malus-mutinerie.jpg','immediate','pirates',-2],['MARINE ROYALE','malus-marine-royale.jpg','marine'],['ROUILLE','malus-rouille.jpg','active'],['MÆLSTROM','malus-maelstrom.jpg','maelstrom'],['CRUAUTÉ','malus-cruaute.jpg','immediate','pirates',-2],['MALÉDICTION DU CRÂNE','malus-malediction-crane.jpg','active'],['DELIRIUM TREMENS','malus-delirium-tremens.jpg','active'],['RATS','malus-rats.jpg','active'],['PRIME DE LA MARINE ROYALE','malus-prime-marine-royale.jpg','active']];
+const state={name:'HUGO',captain:null,lieuts:[],pirates:6,piratesMax:8,defenses:4,defensesMax:4,boulets:3,bouletsMax:3,bonus:[],malus:[],legends:[],figureImprovement:null,deck:[],discard:[],journal:[],turn:1};
+const opponents=[{name:'CHARLES',pirates:6,piratesMax:8,defenses:4,defensesMax:4,boulets:3,bouletsMax:3,bonus:0,malus:[],legends:[],captain:'CHARLES VERJUS',lieuts:['BARBE BLEUE','TARA LOCKWOOD']},{name:'MATHIS',pirates:6,piratesMax:8,defenses:4,defensesMax:4,boulets:3,bouletsMax:3,bonus:0,malus:[],legends:[],captain:'MAHAWA OWONA',lieuts:['MONSIEUR MOT','PERTH HAMILTON']}];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function resetDeck(){state.deck=shuffle([...bonus.map(c=>({type:'bonus',c})),...malus.map(c=>({type:'malus',c}))]);state.discard=[]}
+function addLog(txt,privacy='public'){const d=new Date();state.journal.unshift({t:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),txt,privacy})}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function showScreen(n){qsa('.jr-screen').forEach(x=>x.classList.toggle('is-active',x.dataset.screen===n));scrollTo(0,0)}
+qsa('[data-go]').forEach(b=>b.addEventListener('click',()=>showScreen(b.dataset.go)));
+qs('#hostName').addEventListener('input',e=>qs('#hostPreview').textContent=(e.target.value||'HUGO').toUpperCase());
+function beginSetup(name){state.name=(name||'HUGO').trim().toUpperCase();state.captain=captains[Math.floor(Math.random()*captains.length)];state.lieuts=[];resetDeck();addLog(`${state.name} prépare son navire`);renderSetup();showScreen('setup')}
+qs('#startGameBtn').addEventListener('click',()=>beginSetup(qs('#hostName').value));
+qs('#joinGameBtn').addEventListener('click',()=>{if(!qs('#joinCode').value.trim()||!qs('#joinName').value.trim()){qs('#joinValidation').textContent='INDIQUEZ UN CODE ET VOTRE NOM.';return}beginSetup(qs('#joinName').value)});
+function renderSetup(){qs('#setupCaptain').innerHTML=`<div class="jr-card-identity"><img src="${A+state.captain[1]}"><div><small>CAPITAINE ATTRIBUÉ AU HASARD</small><strong>${esc(state.captain[0])}</strong><p>${esc(state.captain[2])}</p></div></div>`;const g=qs('#setupLieutenants');g.innerHTML='';lieutenants.forEach((l,i)=>{const b=document.createElement('button');b.type='button';b.className='jr-mini-card';b.innerHTML=`<img src="${A+l[2]}"><span><strong>${esc(l[0])}</strong><small>${l[1].toUpperCase()}</small></span>`;b.onclick=()=>{const ix=state.lieuts.indexOf(i);if(ix>=0)state.lieuts.splice(ix,1);else if(state.lieuts.length<2)state.lieuts.push(i);renderSetup()};if(state.lieuts.includes(i))b.classList.add('is-selected');g.appendChild(b)});qs('#setupValidation').textContent=`${state.lieuts.length} / 2 LIEUTENANTS SÉLECTIONNÉS`;qs('#confirmSetup').disabled=state.lieuts.length!==2}
+qs('#confirmSetup').addEventListener('click',()=>{recalc();addLog(`${state.name} commence la partie avec ${state.captain[0]}`);render();showScreen('game')});
+function profiles(){const types=state.lieuts.map(i=>lieutenants[i][1]);let imp=null,comb=null;if(types.filter(x=>x==='soldat').length===2)imp='ARTILLERIE LOURDE';if(types.filter(x=>x==='navigateur').length===2)imp='TRIPLE VOILE';if(types.filter(x=>x==='explorateur').length===2)imp='COQUE RENFORCÉE';if(types.includes('soldat')&&types.includes('navigateur'))comb='CORSAIRE';if(types.includes('soldat')&&types.includes('explorateur'))comb='PILLEUR';if(types.includes('navigateur')&&types.includes('explorateur'))comb='AVENTURIER';return{imp,comb}}
+function recalc(){const p=profiles();state.defensesMax=(p.imp==='COQUE RENFORCÉE'||state.figureImprovement==='COQUE RENFORCÉE')?6:4;state.bouletsMax=(p.imp==='ARTILLERIE LOURDE'||state.figureImprovement==='ARTILLERIE LOURDE')?5:3;state.defenses=Math.min(state.defenses,state.defensesMax);state.boulets=Math.min(state.boulets,state.bouletsMax)}
+function render(){recalc();qs('#piratesCount').textContent=`${state.pirates} / ${state.piratesMax}`;qs('#defensesCount').textContent=`${state.defenses} / ${state.defensesMax}`;qs('#bouletsCount').textContent=`${state.boulets} / ${state.bouletsMax}`;qs('#bonusCount').textContent=`${state.bonus.length} / 4`}
+const sheet=qs('#jrSheet'),title=qs('#sheetTitle'),content=qs('#sheetContent');function open(kind){sheet.hidden=false;document.body.style.overflow='hidden';panel(kind)}function close(){sheet.hidden=true;document.body.style.overflow=''}qsa('[data-close-sheet]').forEach(x=>x.onclick=close);qsa('[data-panel]').forEach(b=>b.onclick=()=>open(b.dataset.panel));
+function panel(k){if(k==='actions')actions();else if(k==='cards')cardsPanel();else if(k==='ship')shipPanel();else if(k==='journal')journal();else if(k==='opponents')opponentsPanel()}
+function actions(){title.textContent='ACTION DE JEU';content.innerHTML=`<div class="jr-action-grid"><button data-a="draw"><span>▱</span>PIOCHER ÉVÉNEMENT</button><button data-a="move"><span>→</span>DÉPLACEMENT</button><button data-a="port"><span>⚓</span>PORT</button><button data-a="battle"><span>⚔</span>BATAILLE NAVALE</button><button data-a="legend"><span>◇</span>DANGER / LÉGENDE</button><button data-a="invoke"><span>✦</span>INVOCATION</button><button data-a="trade"><span>⇄</span>ÉCHANGE</button><button data-a="turn"><span>↻</span>FIN DU TOUR</button></div><div class="jr-deck-status">DECK ÉVÉNEMENT <strong>${state.deck.length}</strong> · DÉFAUSSE <strong>${state.discard.length}</strong></div>`;qsa('[data-a]',content).forEach(b=>b.onclick=()=>({draw:drawEvent,move:movePanel,port:portPanel,battle:battlePanel,legend:legendPanel,invoke:invocationPanel,trade:tradePanel,turn:endTurn}[b.dataset.a])())}
+function drawEvent(){if(!state.deck.length){state.deck=shuffle(state.discard.splice(0));addLog('La défausse Événement est remélangée')};const hasMot=state.lieuts.some(i=>lieutenants[i][0]==='MONSIEUR MOT');if(hasMot&&state.deck.length>1)return motChoice();resolveDraw(state.deck.shift())}
+function motChoice(){title.textContent='MONSIEUR MOT';const two=[state.deck.shift(),state.deck.shift()];content.innerHTML=`<p class="jr-lead">Choisissez l’une des 2 premières cartes du deck. L’autre retourne au sommet.</p><div class="jr-hidden-choice"><button data-pick="0">CARTE 1</button><button data-pick="1">CARTE 2</button></div>`;qsa('[data-pick]',content).forEach(b=>b.onclick=()=>{const i=+b.dataset.pick,other=two[1-i];state.deck.unshift(other);resolveDraw(two[i])})}
+function resolveDraw(item){const [name,img,mode,res,val]=item.c;title.textContent=item.type==='bonus'?'BONUS PIOCHÉ':'MALUS PIOCHÉ';content.innerHTML=`<div class="jr-drawn-card"><img src="${A+img}"><strong>${esc(name)}</strong><small>${item.type==='bonus'?'CARTE PRIVÉE':'CARTE PUBLIQUE'}</small></div><button class="jr-primary" id="resolveCard">RÉSOUDRE LA CARTE</button>`;qs('#resolveCard',content).onclick=()=>applyEvent(item)}
+function hasLieut(n){return state.lieuts.some(i=>lieutenants[i][0]===n)}
+function consumeBonus(n){const i=state.bonus.findIndex(x=>x[0]===n);if(i>=0){const c=state.bonus.splice(i,1)[0];state.discard.push({type:'bonus',c});return true}return false}
+function applyEvent(item){const c=item.c,[name,,mode,res,val]=c;if(item.type==='bonus'){
+ if(mode==='store'){if(state.bonus.length>=4)return replaceBonus(item);state.bonus.push(c);addLog(`${state.name} pioche un Bonus — ${state.bonus.length} Bonus en main`)}
+ else if(mode==='immediate'){const before=state[res];state[res]=clamp(before+val,0,state[res+'Max']);state.discard.push(item);addLog(`${state.name} applique un Bonus : ${name}`)}
+ else if(mode==='epave'){state.defenses=clamp(state.defenses+1,0,state.defensesMax);state.boulets=clamp(state.boulets+1,0,state.bouletsMax);state.discard.push(item);addLog(`${state.name} applique ${name}`)}
+ else if(mode==='marine'){state.defenses=clamp(state.defenses+2,0,state.defensesMax);state.boulets=clamp(state.boulets+3,0,state.bouletsMax);state.discard.push(item);addLog(`${state.name} applique ${name}`)}
+ }else{
+  if(consumeBonus('MALICE DE LA MOUETTE')){state.discard.push(item);addLog(`${state.name} annule un Malus avec MALICE DE LA MOUETTE`);return result('MALUS ANNULÉ',`${name} est défaussé sans effet.`)}
+  if((name==='RÉCIFS'||name==='MÆLSTROM'||name==='VENT CONTRAIRE')&&hasLieut('BOUCANIER THOMAS')){state.discard.push(item);addLog(`${state.name} est immunisé à ${name}`);return result('IMMUNITÉ',`${name} est annulé par Boucanier Thomas.`)}
+  if((name==='CRUAUTÉ'||name==='MUTINERIE'||name==='WANTED')&&hasLieut('LOUISE « JOLIE-REGARD »')){state.discard.push(item);addLog(`${state.name} est immunisé à ${name}`);return result('IMMUNITÉ',`${name} est annulé par Louise « Jolie-Regard ».`)}
+  if((name==='SERPENT DE MER'||name==='GOÉLANDS GÉANTS')&&hasLieut('MATHILDA BERTOLINA')){state.discard.push(item);addLog(`${state.name} est immunisé à ${name}`);return result('IMMUNITÉ',`${name} est annulé par Mathilda Bertolina.`)}
+  if(mode==='immediate'){state[res]=clamp(state[res]+val,0,state[res+'Max']);state.discard.push(item)} else if(mode==='serpent'){state.defenses=clamp(state.defenses-1,0,state.defensesMax);state.pirates=clamp(state.pirates-1,0,state.piratesMax);state.discard.push(item)} else if(mode==='maelstrom'){state.defenses=clamp(state.defenses-2,0,state.defensesMax);state.pirates=clamp(state.pirates-1,0,state.piratesMax);state.discard.push(item)} else if(mode==='marine'){state.pirates=clamp(state.pirates-2,0,state.piratesMax);state.discard.push(item)} else state.malus.push(c);addLog(`${state.name} pioche le Malus public ${name}`)
+ }render();result(name,'État du navire recalculé et enregistré.')}
+function replaceBonus(item){title.textContent='MAIN DE BONUS COMPLÈTE';content.innerHTML=`<p class="jr-lead">Gardez le nouveau Bonus en défaussant l’un des 4 actuels, ou défaussez la nouvelle carte.</p><div id="replace"></div><button class="jr-secondary" id="dropNew">DÉFAUSSER ${esc(item.c[0])}</button>`;const d=qs('#replace',content);state.bonus.forEach((c,i)=>{const b=document.createElement('button');b.className='jr-target-row';b.innerHTML=`<span><strong>${esc(c[0])}</strong><small>REMPLACER PAR ${esc(item.c[0])}</small></span>`;b.onclick=()=>{state.discard.push({type:'bonus',c:state.bonus[i]});state.bonus[i]=item.c;addLog(`${state.name} remplace un Bonus — main 4/4`);render();result('BONUS REMPLACÉ','La nouvelle carte rejoint votre main secrète.')};d.appendChild(b)});qs('#dropNew',content).onclick=()=>{state.discard.push(item);result('BONUS DÉFAUSSÉ','Votre main reste à 4 Bonus.')}}
+function result(n,t){title.textContent=n;content.innerHTML=`<div class="jr-event-result"><strong>${esc(n)}</strong><span>${esc(t)}</span></div><button class="jr-primary" id="ok">TERMINER</button>`;qs('#ok',content).onclick=close;render()}
+function movePanel(){title.textContent='DÉPLACEMENT';const bonusMove=(profiles().imp==='TRIPLE VOILE'||state.figureImprovement==='TRIPLE VOILE'?2:0)+(hasLieut('SIR ANTHONIVRE')?2:0);content.innerHTML=`<p class="jr-lead">Lancez votre dé physique puis indiquez le résultat. Le moteur calcule les modificateurs connus.</p><div class="jr-dice-grid">${[1,2,3,4,5,6].map(n=>`<button data-d="${n}">${n}</button>`).join('')}</div><div class="jr-context-box"><small>MODIFICATEURS ACTIFS</small><p>${bonusMove?`+${bonusMove} cases via Lieutenants / Amélioration.`:'Aucun bonus permanent de distance.'}</p>${profiles().comb==='AVENTURIER'?'<p>AVENTURIER : ±1 disponible une fois sur ce déplacement.</p>':''}</div>`;qsa('[data-d]',content).forEach(b=>b.onclick=()=>{let n=+b.dataset.d+bonusMove;addLog(`${state.name} effectue un déplacement calculé de ${n} cases`);result('DÉPLACEMENT',`Distance de base ${b.dataset.d}${bonusMove?' + '+bonusMove:''} = ${n} cases. Le pion reste déplacé physiquement sur le plateau.`)})}
+function portPanel(){title.textContent='PORT';const usable=state.bonus.filter(c=>['SERVICE RENDU','PETIT BUTIN','GROS BUTIN','BONNE RÉPUTATION','NOUVELLE FIGURE DE PROUE'].includes(c[0]));content.innerHTML=`<p class="jr-lead">Le moteur détecte les Bonus déclenchables au Port.</p><div id="portList"></div><button class="jr-secondary" id="portDone">AUCUN / TERMINER</button>`;const l=qs('#portList',content);usable.forEach(c=>{const b=document.createElement('button');b.className='jr-target-row';b.innerHTML=`<span><strong>${esc(c[0])}</strong><small>UTILISER CE BONUS</small></span>`;b.onclick=()=>usePort(c);l.appendChild(b)});qs('#portDone',content).onclick=()=>{addLog(`${state.name} entre dans un Port`);close()}}
+function usePort(c){const n=c[0];if(n==='SERVICE RENDU')state.boulets=state.bouletsMax;if(n==='GROS BUTIN'){state.boulets=clamp(state.boulets+2,0,state.bouletsMax);state.defenses=clamp(state.defenses+2,0,state.defensesMax)}if(n==='PETIT BUTIN'){state.boulets=clamp(state.boulets+1,0,state.bouletsMax)}if(n==='BONNE RÉPUTATION')state.pirates=clamp(state.pirates+3,0,state.piratesMax);if(n==='NOUVELLE FIGURE DE PROUE')return chooseFigure(c);consumeBonus(n);addLog(`${state.name} révèle et utilise ${n}`);result(n,'Bonus appliqué. État du navire mis à jour.')}
+function chooseFigure(c){title.textContent='NOUVELLE FIGURE DE PROUE';content.innerHTML=`<p class="jr-lead">Choisissez l’Amélioration obtenue.</p>${['TRIPLE VOILE','COQUE RENFORCÉE','ARTILLERIE LOURDE'].map(x=>`<button class="jr-target-row" data-imp="${x}"><span><strong>${x}</strong></span></button>`).join('')}`;qsa('[data-imp]',content).forEach(b=>b.onclick=()=>{state.figureImprovement=b.dataset.imp;consumeBonus('NOUVELLE FIGURE DE PROUE');recalc();addLog(`${state.name} obtient ${b.dataset.imp} via Nouvelle Figure de Proue`);result('AMÉLIORATION ACTIVÉE',b.dataset.imp)})}
+function legendPanel(){title.textContent='DANGER / LÉGENDE';content.innerHTML=`<p class="jr-lead">Après résolution physique du Danger, enregistrez la Légende remportée.</p><div class="jr-legend-grid">${legends.map(l=>`<button class="jr-legend-choice" data-leg="${l[0]}" ${state.legends.some(x=>x.id===l[0])?'disabled':''}><img src="${A+l[3]}"><span><strong>${l[1]}</strong><small>${l[2]}</small></span></button>`).join('')}</div>`;qsa('[data-leg]',content).forEach(b=>b.onclick=()=>{const l=legends.find(x=>x[0]===b.dataset.leg);state.legends.push({id:l[0],used:false});addLog(`${state.name} remporte ${l[1]}`);result('LÉGENDE REMPORTÉE',`${l[2]} est disponible.`)})}
+function invocationPanel(){title.textContent='INVOCATIONS';const avail=state.legends.filter(x=>!x.used);content.innerHTML=avail.length?`<div class="jr-list">${avail.map(x=>{const l=legends.find(y=>y[0]===x.id);return `<button class="jr-target-row" data-inv="${x.id}"><span><strong>${l[2]}</strong><small>${l[1]} · USAGE UNIQUE</small></span></button>`}).join('')}</div>`:'<p class="jr-lead">Aucune Invocation disponible.</p>';qsa('[data-inv]',content).forEach(b=>b.onclick=()=>invoke(b.dataset.inv))}
+function invoke(id){const l=legends.find(x=>x[0]===id),own=state.legends.find(x=>x.id===id);title.textContent=l[2];content.innerHTML=`<p class="jr-lead">Choisissez la cible. L’effet est public et l’Invocation sera définitivement consommée.</p>${opponents.map((o,i)=>`<button class="jr-target-row" data-target="${i}"><span><strong>${o.name}</strong><small>☠ ${o.pirates} · ◇ ${o.defenses} · ● ${o.boulets}</small></span></button>`).join('')}`;qsa('[data-target]',content).forEach(b=>b.onclick=()=>{const o=opponents[+b.dataset.target];if(id==='diable')o.boulets=Math.max(0,o.boulets-3);if(id==='kraken')o.defenses=Math.max(0,o.defenses-3);if(id==='sirenes')o.pirates=Math.max(0,o.pirates-3);own.used=true;addLog(`${state.name} utilise ${l[2]} contre ${o.name}`);result(l[2],id==='calypso'?`${o.name} devra passer son prochain tour.`:id==='wako'?`${o.name} doit être déplacé jusqu’à 8 cases selon votre choix sur le plateau.`:`État de ${o.name} mis à jour.`)})}
+function battlePanel(){title.textContent='BATAILLE NAVALE';content.innerHTML=`<p class="jr-lead">Choisissez l’adversaire. Le moteur prépare les ressources et effets connus.</p>${opponents.map((o,i)=>`<button class="jr-target-row" data-bat="${i}"><span><strong>${o.name}</strong><small>◇ ${o.defenses}/${o.defensesMax} · ● ${o.boulets}/${o.bouletsMax}</small></span></button>`).join('')}`;qsa('[data-bat]',content).forEach(b=>b.onclick=()=>startBattle(+b.dataset.bat))}
+function startBattle(i){const o=opponents[i];if(hasLieut('BARBE BLEUE'))o.pirates=Math.max(0,o.pirates-1);let free=profiles().comb==='CORSAIRE';title.textContent=`BATAILLE · ${o.name}`;content.innerHTML=`<div class="jr-duel"><div><small>${state.name}</small><strong>◇ ${state.defenses} · ● ${state.boulets}</strong></div><span>VS</span><div><small>${o.name}</small><strong>◇ ${o.defenses} · ● ${o.boulets}</strong></div></div><p class="jr-lead">Votre tir. Indiquez le résultat du dé physique.</p><div class="jr-dice-grid">${[1,2,3,4,5,6].map(n=>`<button data-shot="${n}">${n}</button>`).join('')}</div><p class="jr-note">${free?'CORSAIRE ACTIF : ce premier tir ne consomme pas de Boulet.':''}</p>`;qsa('[data-shot]',content).forEach(b=>b.onclick=()=>{if(!free&&state.boulets<=0)return result('AUCUN BOULET','Vous ne pouvez pas tirer.');if(!free)state.boulets--;free=false;const roll=+b.dataset.shot,hit=roll>=3;if(hit)o.defenses=Math.max(0,o.defenses-1);addLog(`${state.name} tire sur ${o.name} : ${roll} — ${hit?'TOUCHE':'ÉCHEC'}`);render();result(hit?'TOUCHE':'ÉCHEC',hit?`${o.name} perd 1 Défense.`:'Aucun dégât. La riposte adverse reste à résoudre dans le prototype local.')})}
+function tradePanel(){title.textContent='ÉCHANGE';content.innerHTML=`<p class="jr-lead">Les échanges restent soumis aux conditions de proximité du plateau. Choisissez une ressource à transférer.</p>${opponents.map((o,i)=>`<button class="jr-target-row" data-tr="${i}"><span><strong>${o.name}</strong><small>OUVRIR LE TRANSFERT</small></span></button>`).join('')}`;qsa('[data-tr]',content).forEach(b=>b.onclick=()=>tradeTo(+b.dataset.tr))}
+function tradeTo(i){const o=opponents[i];title.textContent=`TRANSFERT · ${o.name}`;content.innerHTML=`${['pirates','defenses','boulets'].map(r=>`<button class="jr-target-row" data-r="${r}"><span><strong>1 ${r==='pirates'?'PIRATE':r==='defenses'?'DÉFENSE':'BOULET'}</strong><small>VOUS : ${state[r]} · ${o.name} : ${o[r]}/${o[r+'Max']}</small></span></button>`).join('')}`;qsa('[data-r]',content).forEach(b=>b.onclick=()=>{const r=b.dataset.r;if(state[r]<1||o[r]>=o[r+'Max'])return;state[r]--;o[r]++;addLog(`${state.name} transfère 1 ${r} à ${o.name}`);render();result('TRANSFERT','État des deux navires mis à jour.')})}
+function endTurn(){state.turn++;addLog(`${state.name} termine son tour · tour ${state.turn}`);result('FIN DU TOUR',`Tour ${state.turn}. Les effets temporaires arrivés à échéance devront être résolus par le moteur.`)}
+function cardsPanel(){title.textContent='CARTERIE DE MON NAVIRE';const p=profiles();content.innerHTML=`<div class="jr-card-identity"><img src="${A+state.captain[1]}"><div><small>CAPITAINE</small><strong>${esc(state.captain[0])}</strong><p>${esc(state.captain[2])}</p></div></div><h3 class="jr-subhead">LIEUTENANTS</h3>${state.lieuts.map(i=>`<div class="jr-private-card"><img src="${A+lieutenants[i][2]}"><div><strong>${esc(lieutenants[i][0])}</strong><small>${esc(lieutenants[i][3])}</small></div></div>`).join('')}<h3 class="jr-subhead">EFFETS CALCULÉS</h3><div class="jr-status-grid"><div><small>AMÉLIORATION</small><strong>${p.imp||state.figureImprovement||'AUCUNE'}</strong></div><div><small>COMBINAISON</small><strong>${p.comb||'AUCUNE'}</strong></div></div><h3 class="jr-subhead">BONUS SECRETS · ${state.bonus.length}/4</h3>${state.bonus.length?state.bonus.map(c=>`<div class="jr-private-card"><img src="${A+c[1]}"><div><strong>${esc(c[0])}</strong><small>PRIVÉ JUSQU’À UTILISATION</small></div></div>`).join(''):'<p class="jr-note">Aucun Bonus.</p>'}<h3 class="jr-subhead">MALUS PUBLICS</h3>${state.malus.length?state.malus.map(c=>`<div class="jr-private-card"><img src="${A+c[1]}"><div><strong>${esc(c[0])}</strong><small>EFFET ACTIF PUBLIC</small></div></div>`).join(''):'<p class="jr-note">Aucun Malus actif.</p>'}`}
+function shipPanel(){title.textContent='ÉTAT DU NAVIRE';const p=profiles();content.innerHTML=`<div class="jr-status-grid"><div><small>PIRATES</small><strong>${state.pirates}/${state.piratesMax}</strong></div><div><small>DÉFENSES</small><strong>${state.defenses}/${state.defensesMax}</strong></div><div><small>BOULETS</small><strong>${state.boulets}/${state.bouletsMax}</strong></div><div><small>BONUS</small><strong>${state.bonus.length}/4</strong></div></div><div class="jr-list"><div class="jr-list-row"><span><strong>${state.captain[0]}</strong><small>CAPITAINE</small></span></div><div class="jr-list-row"><span><strong>${state.lieuts.map(i=>lieutenants[i][0]).join(' · ')}</strong><small>LIEUTENANTS</small></span></div><div class="jr-list-row"><span><strong>${p.imp||state.figureImprovement||'AUCUNE'}</strong><small>AMÉLIORATION ACTIVE</small></span></div><div class="jr-list-row"><span><strong>${p.comb||'AUCUNE'}</strong><small>COMBINAISON ACTIVE</small></span></div><div class="jr-list-row"><span><strong>${state.legends.length}/5</strong><small>LÉGENDES À BORD</small></span></div></div>`}
+function opponentsPanel(){title.textContent='ADVERSAIRES · ÉTAT PUBLIC';content.innerHTML=opponents.map((o,i)=>`<button class="jr-target-row" data-op="${i}"><span><strong>${o.name}</strong><small>☠ ${o.pirates}/${o.piratesMax} · ◇ ${o.defenses}/${o.defensesMax} · ● ${o.boulets}/${o.bouletsMax} · BONUS ${o.bonus}</small></span><em>${o.legends.length} LÉGENDE(S)</em></button>`).join('');}
+function journal(){title.textContent='JOURNAL DE PARTIE';content.innerHTML=`<ul class="jr-journal">${state.journal.map(x=>`<li><time>${x.t}</time><span>${esc(x.txt)}</span></li>`).join('')}</ul>`}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)close()});render();
 })();

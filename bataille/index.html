@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16.png?v=1">
 <link rel="shortcut icon" href="../assets/favicon/favicon.ico?v=1">
 <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png?v=1">
-<link rel="stylesheet" href="../assets/style.css?v=10">
+<link rel="stylesheet" href="../assets/style.css?v=11">
 </head>
 <body>
 <main class="jr-interactive neutral-mandala" id="jrBattleApp">
@@ -18,7 +18,7 @@
     <header class="jr-app-head">
       <p class="menu-brand">JOLLY ROGER</p>
       <h1>MODE INTERACTIF</h1>
-      <p class="jr-kicker">PARTIE CONNECTÉE</p>
+      <p class="jr-kicker">JEU DE PLATEAU ASSISTÉ</p>
     </header>
 
     <section class="jr-screen is-active" data-screen="home">
@@ -27,7 +27,7 @@
         <button class="jr-primary" type="button" data-go="create">NOUVELLE PARTIE</button>
         <button class="jr-secondary" type="button" data-go="join">REJOINDRE UNE PARTIE</button>
       </div>
-      <p class="jr-note">Prototype V9 · fonctionnement local pour tester l’ergonomie avant synchronisation multi-joueurs.</p>
+      <p class="jr-note">Prototype V11 · carterie, deck, navire et règles liées. Synchronisation multi-appareils à connecter dans une étape serveur.</p>
     </section>
 
     <section class="jr-screen" data-screen="create">
@@ -45,7 +45,7 @@
         <div><span class="jr-dot"></span><strong>EN ATTENTE</strong></div>
         <div><span class="jr-dot"></span><strong>EN ATTENTE</strong></div>
       </div>
-      <button class="jr-primary" type="button" id="startGameBtn">DÉBUT PARTIE JOLLY ROGER</button>
+      <button class="jr-primary" type="button" id="startGameBtn">PRÉPARER LA PARTIE</button>
     </section>
 
     <section class="jr-screen" data-screen="join">
@@ -61,6 +61,17 @@
       <p class="jr-validation" id="joinValidation"></p>
     </section>
 
+    <section class="jr-screen" data-screen="setup">
+      <button class="jr-back" type="button" data-go="home">← QUITTER</button>
+      <h2>MISE EN PLACE NUMÉRIQUE</h2>
+      <p class="jr-lead">Le moteur distribue votre Capitaine puis vous accompagne dans le choix de vos 2 Lieutenants. Les Améliorations et Combinaisons seront calculées automatiquement.</p>
+      <div id="setupCaptain"></div>
+      <h3 class="jr-subhead">CHOISISSEZ 2 LIEUTENANTS</h3>
+      <div class="jr-setup-grid" id="setupLieutenants"></div>
+      <p class="jr-validation" id="setupValidation"></p>
+      <button class="jr-primary" type="button" id="confirmSetup" disabled>COMMENCER LA PARTIE</button>
+    </section>
+
     <section class="jr-screen" data-screen="game">
       <div class="jr-game-topbar">
         <button class="jr-icon-btn" type="button" id="menuToggle" aria-label="Ouvrir les raccourcis">☰</button>
@@ -73,19 +84,19 @@
       </section>
 
       <section class="jr-resources" aria-label="Ressources du navire">
-        <button type="button" class="jr-resource" data-detail="pirates"><span>☠</span><small>PIRATES</small><strong id="piratesCount">4 / 8</strong></button>
-        <button type="button" class="jr-resource" data-detail="defenses"><span>◇</span><small>DÉFENSES</small><strong id="defensesCount">1 / 4</strong></button>
+        <button type="button" class="jr-resource" data-detail="pirates"><span>☠</span><small>PIRATES</small><strong id="piratesCount">6 / 8</strong></button>
+        <button type="button" class="jr-resource" data-detail="defenses"><span>◇</span><small>DÉFENSES</small><strong id="defensesCount">4 / 4</strong></button>
         <button type="button" class="jr-resource" data-detail="boulets"><span>●</span><small>BOULETS</small><strong id="bouletsCount">3 / 3</strong></button>
         <button type="button" class="jr-resource" data-panel="cards"><span>▱</span><small>BONUS</small><strong id="bonusCount">0 / 4</strong></button>
       </section>
 
-      <button class="jr-primary jr-action-main" type="button" data-panel="actions">＋ ACTION</button>
+      <button class="jr-primary jr-action-main" type="button" data-panel="actions">＋ ACTION DE JEU</button>
 
       <nav class="jr-bottom-nav" aria-label="Navigation de partie">
         <button class="is-current" type="button" data-panel="ship"><span>⚓</span>MON NAVIRE</button>
         <button type="button" data-panel="opponents"><span>♟</span>ADVERSAIRES</button>
         <button type="button" data-panel="journal"><span>≡</span>JOURNAL</button>
-        <button type="button" data-panel="cards"><span>▱</span>MES CARTES</button>
+        <button type="button" data-panel="cards"><span>▱</span>CARTERIE</button>
       </nav>
     </section>
   </section>
@@ -102,6 +113,6 @@
   <div class="home-mandala home-mandala-bottom"></div>
 </main>
 <script src="../assets/menu.js?v=7"></script>
-<script src="../assets/bataille.js?v=10"></script>
+<script src="../assets/bataille.js?v=11"></script>
 </body>
 </html>
