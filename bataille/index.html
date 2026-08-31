@@ -1,6 +1,119 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bataille navale — Jolly Roger</title>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Mode interactif — Jolly Roger</title>
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16.png?v=1">
 <link rel="shortcut icon" href="../assets/favicon/favicon.ico?v=1">
-<link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png?v=1"><link rel="stylesheet" href="../assets/style.css?v=4"></head><body><main class="coming-page neutral-mandala"><div class="home-mandala home-mandala-top"></div><section class="coming-inner page-layer"><p class="menu-brand">JOLLY ROGER</p><h1>BATAILLE NAVALE</h1><p>MODULE INTERACTIF</p><strong>BIENTÔT DISPONIBLE</strong><a class="back-home" href="../">← Retour à l’accueil</a></section><div class="home-mandala home-mandala-bottom"></div></main><script src="../assets/menu.js?v=7"></script>
-</body></html>
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png?v=1">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+</head>
+<body>
+<main class="jr-interactive neutral-mandala" id="jrBattleApp">
+  <div class="home-mandala home-mandala-top"></div>
+  <section class="jr-app-shell page-layer" aria-live="polite">
+    <header class="jr-app-head">
+      <p class="menu-brand">JOLLY ROGER</p>
+      <h1>MODE INTERACTIF</h1>
+      <p class="jr-kicker">PARTIE CONNECTÉE</p>
+    </header>
+
+    <section class="jr-screen is-active" data-screen="home">
+      <div class="jr-hero-mark" aria-hidden="true">☠</div>
+      <p class="jr-lead">Créez une partie ou rejoignez votre équipage avec un code d’accès.</p>
+      <div class="jr-stack">
+        <button class="jr-primary" type="button" data-go="create">NOUVELLE PARTIE</button>
+        <button class="jr-secondary" type="button" data-go="join">REJOINDRE UNE PARTIE</button>
+      </div>
+      <p class="jr-note">Prototype V9 · fonctionnement local pour tester l’ergonomie avant synchronisation multi-joueurs.</p>
+    </section>
+
+    <section class="jr-screen" data-screen="create">
+      <button class="jr-back" type="button" data-go="home">← RETOUR</button>
+      <h2>NOUVELLE PARTIE</h2>
+      <div class="jr-code-card">
+        <span>CODE D’ACCÈS</span>
+        <strong id="createdCode">KRAKEN-72</strong>
+      </div>
+      <label class="jr-field">VOTRE NOM
+        <input id="hostName" type="text" maxlength="18" value="HUGO" autocomplete="off">
+      </label>
+      <div class="jr-room-list">
+        <div><span class="jr-dot online"></span><strong id="hostPreview">HUGO</strong><small>HÔTE</small></div>
+        <div><span class="jr-dot"></span><strong>EN ATTENTE</strong></div>
+        <div><span class="jr-dot"></span><strong>EN ATTENTE</strong></div>
+      </div>
+      <button class="jr-primary" type="button" id="startGameBtn">DÉBUT PARTIE JOLLY ROGER</button>
+    </section>
+
+    <section class="jr-screen" data-screen="join">
+      <button class="jr-back" type="button" data-go="home">← RETOUR</button>
+      <h2>REJOINDRE UNE PARTIE</h2>
+      <label class="jr-field">CODE D’ACCÈS
+        <input id="joinCode" type="text" maxlength="12" placeholder="KRAKEN-72" autocomplete="off">
+      </label>
+      <label class="jr-field">VOTRE NOM
+        <input id="joinName" type="text" maxlength="18" placeholder="VOTRE NOM" autocomplete="off">
+      </label>
+      <button class="jr-primary" type="button" id="joinGameBtn">REJOINDRE</button>
+      <p class="jr-validation" id="joinValidation"></p>
+    </section>
+
+    <section class="jr-screen" data-screen="game">
+      <div class="jr-game-topbar">
+        <button class="jr-icon-btn" type="button" id="menuToggle" aria-label="Ouvrir les raccourcis">☰</button>
+        <div><span>MON NAVIRE</span><strong id="shipName">L’AIGLE NOIR</strong></div>
+        <button class="jr-icon-btn" type="button" data-panel="journal" aria-label="Ouvrir le journal">≡</button>
+      </div>
+
+      <section class="jr-ship-stage">
+        <div class="jr-ship-visual" aria-label="Illustration temporaire du navire">
+          <div class="jr-moon"></div>
+          <svg viewBox="0 0 620 260" role="img" aria-label="Silhouette de navire pirate">
+            <path d="M120 185h380l-54 43H172z" fill="none" stroke="currentColor" stroke-width="5"/>
+            <path d="M310 48v138M238 72v116M386 82v104" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M306 58L190 112l116 6zM314 62l123 58-123 4zM235 81l-83 58 83 1zM390 92l84 50-84 2z" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M160 185c90 15 210 15 324 0" fill="none" stroke="currentColor" stroke-width="3" opacity=".55"/>
+          </svg>
+          <div class="jr-cannonballs" id="cannonballsVisual" aria-hidden="true"></div>
+          <div class="jr-pirates" id="piratesVisual" aria-hidden="true"></div>
+          <div class="jr-shields" id="defensesVisual" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="jr-resources" aria-label="Ressources du navire">
+        <button type="button" class="jr-resource" data-detail="pirates"><span>☠</span><small>PIRATES</small><strong id="piratesCount">4 / 8</strong></button>
+        <button type="button" class="jr-resource" data-detail="defenses"><span>◇</span><small>DÉFENSES</small><strong id="defensesCount">1 / 4</strong></button>
+        <button type="button" class="jr-resource" data-detail="boulets"><span>●</span><small>BOULETS</small><strong id="bouletsCount">3 / 3</strong></button>
+        <button type="button" class="jr-resource" data-panel="cards"><span>▱</span><small>BONUS</small><strong id="bonusCount">0 / 4</strong></button>
+      </section>
+
+      <button class="jr-primary jr-action-main" type="button" data-panel="actions">＋ ACTION</button>
+
+      <nav class="jr-bottom-nav" aria-label="Navigation de partie">
+        <button class="is-current" type="button" data-panel="ship"><span>⚓</span>MON NAVIRE</button>
+        <button type="button" data-panel="opponents"><span>♟</span>ADVERSAIRES</button>
+        <button type="button" data-panel="journal"><span>≡</span>JOURNAL</button>
+        <button type="button" data-panel="cards"><span>▱</span>MES CARTES</button>
+      </nav>
+    </section>
+  </section>
+
+  <div class="jr-sheet" id="jrSheet" hidden>
+    <div class="jr-sheet-backdrop" data-close-sheet></div>
+    <section class="jr-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="jr-sheet-handle"></div>
+      <header><h2 id="sheetTitle">ACTION</h2><button type="button" class="jr-close" data-close-sheet aria-label="Fermer">×</button></header>
+      <div id="sheetContent"></div>
+    </section>
+  </div>
+
+  <div class="home-mandala home-mandala-bottom"></div>
+</main>
+<script src="../assets/menu.js?v=7"></script>
+<script src="../assets/bataille.js?v=9"></script>
+</body>
+</html>
