@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16.png?v=1">
 <link rel="shortcut icon" href="../assets/favicon/favicon.ico?v=1">
 <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png?v=1">
-<link rel="stylesheet" href="../assets/style.css?v=9">
+<link rel="stylesheet" href="../assets/style.css?v=10">
 </head>
 <body>
 <main class="jr-interactive neutral-mandala" id="jrBattleApp">
@@ -22,7 +22,6 @@
     </header>
 
     <section class="jr-screen is-active" data-screen="home">
-      <div class="jr-hero-mark" aria-hidden="true">☠</div>
       <p class="jr-lead">Créez une partie ou rejoignez votre équipage avec un code d’accès.</p>
       <div class="jr-stack">
         <button class="jr-primary" type="button" data-go="create">NOUVELLE PARTIE</button>
@@ -69,19 +68,8 @@
         <button class="jr-icon-btn" type="button" data-panel="journal" aria-label="Ouvrir le journal">≡</button>
       </div>
 
-      <section class="jr-ship-stage">
-        <div class="jr-ship-visual" aria-label="Illustration temporaire du navire">
-          <div class="jr-moon"></div>
-          <svg viewBox="0 0 620 260" role="img" aria-label="Silhouette de navire pirate">
-            <path d="M120 185h380l-54 43H172z" fill="none" stroke="currentColor" stroke-width="5"/>
-            <path d="M310 48v138M238 72v116M386 82v104" fill="none" stroke="currentColor" stroke-width="4"/>
-            <path d="M306 58L190 112l116 6zM314 62l123 58-123 4zM235 81l-83 58 83 1zM390 92l84 50-84 2z" fill="none" stroke="currentColor" stroke-width="3"/>
-            <path d="M160 185c90 15 210 15 324 0" fill="none" stroke="currentColor" stroke-width="3" opacity=".55"/>
-          </svg>
-          <div class="jr-cannonballs" id="cannonballsVisual" aria-hidden="true"></div>
-          <div class="jr-pirates" id="piratesVisual" aria-hidden="true"></div>
-          <div class="jr-shields" id="defensesVisual" aria-hidden="true"></div>
-        </div>
+      <section class="jr-ship-stage jr-ship-placeholder" aria-label="Emplacement du futur visuel du navire">
+        <p>VISUEL NAVIRE À PARAÎTRE PROCHAINEMENT</p>
       </section>
 
       <section class="jr-resources" aria-label="Ressources du navire">
@@ -114,6 +102,6 @@
   <div class="home-mandala home-mandala-bottom"></div>
 </main>
 <script src="../assets/menu.js?v=7"></script>
-<script src="../assets/bataille.js?v=9"></script>
+<script src="../assets/bataille.js?v=10"></script>
 </body>
 </html>
