@@ -1,32 +1,43 @@
 <!doctype html>
 <html lang="fr"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#000000">
 <title>L’Encre du Kraken — Jolly Roger</title>
 <link rel="stylesheet" href="../assets/style.css">
 </head><body>
-<main class="legend-page" style="--accent:#002496;--motif:url('../assets/backgrounds/kraken.jpg')">
-  <div class="hero" aria-hidden="true"></div>
-  <section class="main">
-    <p class="eyebrow">ÉCOUTER LA LÉGENDE DE</p>
-    <h1 class="title">L’Encre du Kraken</h1>
-    <div class="title-rule"></div>
-    <div class="player">
-      <button class="play" aria-label="Lecture ou pause"></button>
-      <span class="time current">00:00</span>
-      <input class="seek" type="range" min="0" value="0" step=".1" aria-label="Position de lecture">
-      <span class="time duration">00:00</span>
-    </div>
-    <audio preload="metadata" src="../audio/kraken.mp3"></audio>
-    <div class="credits">
-      <div class="official">VERSION AUDIO OFFICIELLE DU JEU JOLLY ROGER</div>
-      <p class="credit">VOIX. <strong>SAMOO</strong></p>
-      <p class="credit">AUTEUR. <strong>ZOREY COOL</strong></p>
-      <p class="credit">ENREGISTREMENT/MIXAGE. <strong>M.2.O.</strong></p>
-      <div class="credit-rule"></div>
-      <a class="back" href="../">Menu des légendes</a>
-    </div>
-  </section>
+<main class="legend-page" style="--accent:#002496;--top:url('../assets/backgrounds/kraken-top.jpg');--bottom:url('../assets/backgrounds/kraken-bottom.jpg')">
+  <div class="legend-shell">
+    <div class="hero-top" aria-hidden="true"></div>
+
+    <section class="main">
+      <p class="eyebrow">ÉCOUTER LA LÉGENDE DE</p>
+      <h1 class="title">L’Encre du Kraken</h1>
+      <div class="title-rule"></div>
+
+      <div class="player">
+        <button class="play" data-state="play" aria-label="Lire">
+          <span class="play-shape" aria-hidden="true"></span>
+        </button>
+        <span class="time current">00:00</span>
+        <input class="seek" type="range" min="0" value="0" step=".1" aria-label="Position de lecture">
+        <span class="time duration">00:00</span>
+      </div>
+
+      <audio preload="metadata" src="../audio/kraken.mp3"></audio>
+
+      <div class="credits">
+        <div class="official">VERSION AUDIO OFFICIELLE DU JEU JOLLY ROGER</div>
+        <p class="credit">VOIX. <strong>SAMOO</strong></p>
+        <p class="credit">AUTEUR. <strong>ZOREY COOL</strong></p>
+        <p class="credit">ENREGISTREMENT/MIXAGE. <strong>M.2.O.</strong></p>
+        <div class="credit-rule"></div>
+        <a class="back" href="../">Menu des légendes</a>
+      </div>
+    </section>
+
+    <div class="hero-bottom" aria-hidden="true"></div>
+  </div>
 </main>
 <script src="../assets/player.js"></script>
 </body></html>
