@@ -1,37 +1,32 @@
 <!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#000000">
 <title>L’Encre du Kraken — Jolly Roger</title>
 <link rel="stylesheet" href="../assets/style.css">
-</head>
-<body>
-<main class="page" style="--accent:#002496;--bg:url('../assets/backgrounds/kraken.png')">
-  <section class="content">
-    <p class="kicker">ÉCOUTER LA LÉGENDE DE</p>
-    <h1>L’Encre du Kraken</h1>
-    <div class="rule"></div>
-
-    <div class="player" aria-label="Lecteur audio">
-      <button class="play" aria-label="Lecture / pause"></button>
+</head><body>
+<main class="legend-page" style="--accent:#002496;--motif:url('../assets/backgrounds/kraken.jpg')">
+  <div class="hero" aria-hidden="true"></div>
+  <section class="main">
+    <p class="eyebrow">ÉCOUTER LA LÉGENDE DE</p>
+    <h1 class="title">L’Encre du Kraken</h1>
+    <div class="title-rule"></div>
+    <div class="player">
+      <button class="play" aria-label="Lecture ou pause"></button>
       <span class="time current">00:00</span>
-      <input class="seek" type="range" min="0" value="0" step="0.1" aria-label="Position de lecture">
+      <input class="seek" type="range" min="0" value="0" step=".1" aria-label="Position de lecture">
       <span class="time duration">00:00</span>
     </div>
     <audio preload="metadata" src="../audio/kraken.mp3"></audio>
-
     <div class="credits">
       <div class="official">VERSION AUDIO OFFICIELLE DU JEU JOLLY ROGER</div>
-      <p class="credit-line">VOIX. <strong>SAMOO</strong></p>
-      <p class="credit-line">AUTEUR. <strong>ZOREY COOL</strong></p>
-      <p class="credit-line">ENREGISTREMENT/MIXAGE. <strong>M.2.O.</strong></p>
-      <div class="small-rule"></div>
-      <a class="menu" href="../">MENU LÉGENDES JOLLY ROGER</a>
+      <p class="credit">VOIX. <strong>SAMOO</strong></p>
+      <p class="credit">AUTEUR. <strong>ZOREY COOL</strong></p>
+      <p class="credit">ENREGISTREMENT/MIXAGE. <strong>M.2.O.</strong></p>
+      <div class="credit-rule"></div>
+      <a class="back" href="../">Menu des légendes</a>
     </div>
   </section>
 </main>
 <script src="../assets/player.js"></script>
-</body>
-</html>
+</body></html>
