@@ -2,374 +2,132 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&display=swap');
 
 :root{
-  --black:#000;
   --ivory:#fff3d8;
-  --sand:#d6b285;
-  --deep:#341f0f;
-  --accent:#935c00;
+  --gold:#d6b285;
+  --brown:#7e4e24;
+  --accent:#005c53;
 }
 *{box-sizing:border-box}
-html,body{
-  margin:0;
-  min-height:100%;
-  background:#000;
-  color:var(--ivory);
-}
-body{
-  font-family:"Barlow Condensed",Arial,sans-serif;
-  overflow-x:hidden;
-}
-
-/* ===== PAGES LÉGENDES : composition plein écran ===== */
+html,body{margin:0;background:#000;color:var(--ivory);font-family:"Barlow Condensed",Arial,sans-serif}
+body{min-height:100svh}
 .legend-page{
   min-height:100svh;
-  height:100svh;
-  background:#000;
-  display:flex;
-  justify-content:center;
+  width:100%;
   overflow:hidden;
+  background:#000;
+  display:grid;
+  grid-template-rows:minmax(120px,1fr) auto minmax(120px,1fr);
 }
-
-.legend-shell{
+.mandala{
   position:relative;
-  width:min(100%,921px);
-  height:100svh;
-  min-height:100svh;
-  margin:0 auto;
   overflow:hidden;
-  background:#000;
-  text-align:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  min-height:clamp(145px,24svh,300px);
 }
-
-/* Les mandalas sont décoratifs et ne prennent plus de place dans le flux */
-.hero-top,
-.hero-bottom{
+.mandala::before{
+  content:"";
   position:absolute;
   left:50%;
+  width:min(94vw,780px);
+  aspect-ratio:1/1;
   transform:translateX(-50%);
-  width:min(100%,820px);
-  pointer-events:none;
-  z-index:0;
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:100% auto;
+  border-radius:50%;
+  opacity:.9;
+  background:
+    radial-gradient(circle at center, transparent 0 7%, var(--accent) 7.3% 8%, transparent 8.3% 15%, var(--accent) 15.3% 16%, transparent 16.3% 23%, var(--accent) 23.3% 24%, transparent 24.3% 33%, var(--accent) 33.3% 34%, transparent 34.3% 43%, var(--accent) 43.3% 44%, transparent 44.3% 100%),
+    repeating-conic-gradient(from 0deg, var(--accent) 0 1deg, transparent 1deg 12deg);
+  -webkit-mask-image:radial-gradient(circle, #000 0 58%, transparent 78%);
+  mask-image:radial-gradient(circle, #000 0 58%, transparent 78%);
 }
+.mandala.top::before{bottom:-42%}
+.mandala.bottom::before{top:-42%}
 
-/* Vrai fondu progressif : visible en haut -> noir avant le contenu */
-.hero-top{
-  top:-1px;
-  height:43svh;
-  background-image:var(--top);
-  background-position:top center;
-  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.78) 66%,rgba(0,0,0,.28) 84%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.78) 66%,rgba(0,0,0,.28) 84%,transparent 100%);
-}
-
-/* Fondu inverse : noir après le contenu -> mandala visible vers le bas */
-.hero-bottom{
-  bottom:-1px;
-  height:34svh;
-  background-image:var(--bottom);
-  background-position:bottom center;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 20%,rgba(0,0,0,.68) 48%,#000 75%,#000 100%);
-  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 20%,rgba(0,0,0,.68) 48%,#000 75%,#000 100%);
-}
-
-.main{
+.card{
   position:relative;
   z-index:2;
-  width:min(88%,680px);
-  margin:0 auto;
-  transform:translateY(1.5svh);
+  width:min(92vw,760px);
+  margin:auto;
+  padding:clamp(22px,4svh,42px) clamp(18px,5vw,48px);
+  border:1px solid var(--gold);
+  border-radius:28px;
+  background:#000;
+  text-align:center;
 }
-
-.eyebrow{
+.kicker{
   margin:0 0 8px;
-  font-size:clamp(12px,1.8vw,16px);
+  font-size:clamp(15px,2.1vw,20px);
   font-weight:300;
-  letter-spacing:.18em;
+  letter-spacing:.24em;
   text-transform:uppercase;
 }
-.title{
+h1{
   margin:0;
-  font-size:clamp(38px,5.8vw,58px);
+  font-size:clamp(40px,7vw,68px);
   line-height:1;
   font-weight:400;
-  letter-spacing:.018em;
+  letter-spacing:.01em;
 }
-.title-rule{
-  width:150px;
-  height:1px;
-  margin:20px auto 23px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+.rule{
+  width:110px;height:1px;margin:22px auto 26px;
+  background:var(--accent);
+  opacity:.75;
 }
-
-/* ===== LECTEUR ===== */
 .player{
-  width:100%;
-  min-height:78px;
-  padding:10px 18px;
   display:grid;
-  grid-template-columns:54px 45px minmax(100px,1fr) 45px;
+  grid-template-columns:64px 50px 1fr 50px;
   align-items:center;
-  gap:10px;
-  border:1px solid rgba(214,178,133,.9);
-  border-radius:25px;
-  background:#000;
+  gap:12px;
+  border:1px solid var(--gold);
+  border-radius:28px;
+  padding:12px 16px;
 }
 .play{
-  appearance:none;
-  -webkit-appearance:none;
-  width:54px;
-  height:54px;
-  padding:0;
-  border:0;
-  border-radius:50%;
-  background:var(--ivory);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
+  width:56px;height:56px;border-radius:50%;
+  border:0;background:var(--ivory);color:#341f0f;
+  display:grid;place-items:center;cursor:pointer;padding:0;
 }
-.play-shape{
-  display:block;
-  width:0;
-  height:0;
-  margin-left:4px;
-  border-top:10px solid transparent;
-  border-bottom:10px solid transparent;
-  border-left:17px solid var(--deep);
+.play .triangle{
+  width:0;height:0;border-top:11px solid transparent;border-bottom:11px solid transparent;
+  border-left:17px solid #341f0f;margin-left:4px;
 }
-.play[data-state="pause"] .play-shape{
-  width:17px;
-  height:22px;
-  margin-left:0;
-  border:0;
-  background:linear-gradient(
-    90deg,
-    var(--deep) 0 31%,
-    transparent 31% 69%,
-    var(--deep) 69% 100%
-  );
+.play.is-playing .triangle{
+  width:18px;height:22px;border:0;margin:0;
+  background:linear-gradient(90deg,#341f0f 0 35%,transparent 35% 65%,#341f0f 65% 100%);
 }
-.time{
-  color:var(--sand);
-  font-size:17px;
-  font-weight:400;
-  font-variant-numeric:tabular-nums;
-}
-.seek{
-  appearance:none;
-  -webkit-appearance:none;
-  width:100%;
-  height:22px;
-  margin:0;
-  background:transparent;
-  cursor:pointer;
-}
-.seek::-webkit-slider-runnable-track{
-  height:3px;
-  background:rgba(255,243,216,.95);
-  border-radius:999px;
-}
-.seek::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:14px;
-  height:14px;
-  margin-top:-5.5px;
-  border:0;
-  border-radius:50%;
-  background:var(--ivory);
-}
-.seek::-moz-range-track{
-  height:3px;
-  background:rgba(255,243,216,.95);
-  border:0;
-  border-radius:999px;
-}
-.seek::-moz-range-progress{
-  height:3px;
-  background:var(--sand);
-  border-radius:999px;
-}
-.seek::-moz-range-thumb{
-  width:14px;
-  height:14px;
-  border:0;
-  border-radius:50%;
-  background:var(--ivory);
-}
-
-/* ===== CRÉDITS : compacts pour tenir dans l'écran ===== */
-.credits{
-  padding:28px 0 0;
-  font-size:16px;
-  font-weight:300;
-  letter-spacing:.03em;
-  line-height:1.35;
-}
+.time{font-size:19px;color:var(--gold);font-variant-numeric:tabular-nums}
+.seek{width:100%;accent-color:var(--ivory)}
 .official{
-  color:var(--sand);
-  font-size:13px;
-  letter-spacing:.08em;
-  margin-bottom:14px;
+  margin:27px 0 20px;color:var(--gold);
+  font-size:16px;letter-spacing:.11em;text-transform:uppercase;
 }
-.credit{margin:1px 0}
-.credit strong{font-weight:500}
-.credit-rule{
-  width:105px;
-  height:1px;
-  margin:16px auto;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+.credits{font-size:19px;line-height:1.45;font-weight:300;letter-spacing:.04em}
+.credits strong{font-weight:600}
+.menu-link{
+  display:inline-block;margin-top:25px;color:var(--gold);text-decoration:none;
+  border-bottom:1px solid var(--gold);padding-bottom:3px;
+  font-size:17px;letter-spacing:.12em;text-transform:uppercase;
 }
-.back{
-  color:var(--sand);
-  font-size:13px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  text-decoration:none;
-  border-bottom:1px solid rgba(214,178,133,.7);
-  padding-bottom:2px;
+@media (max-width:600px){
+  .legend-page{grid-template-rows:minmax(95px,1fr) auto minmax(95px,1fr)}
+  .mandala{min-height:120px}
+  .mandala.top::before{bottom:-34%}
+  .mandala.bottom::before{top:-34%}
+  .card{width:94vw;border-radius:22px;padding:20px 16px}
+  .kicker{font-size:14px}
+  h1{font-size:clamp(38px,11vw,54px)}
+  .rule{margin:17px auto 19px}
+  .player{grid-template-columns:54px 44px 1fr 44px;gap:8px;padding:10px 11px;border-radius:24px}
+  .play{width:50px;height:50px}
+  .time{font-size:17px}
+  .official{margin:20px 0 15px;font-size:14px}
+  .credits{font-size:17px;line-height:1.35}
+  .menu-link{margin-top:19px;font-size:15px}
 }
-.back:hover{color:var(--ivory)}
-
-/* Téléphones courants */
-@media(max-width:600px){
-  .legend-shell{
-    width:100%;
-  }
-  .hero-top{
-    width:590px;
-    height:40svh;
-  }
-  .hero-bottom{
-    width:590px;
-    height:29svh;
-  }
-  .main{
-    width:min(90%,540px);
-    transform:translateY(2svh);
-  }
-  .eyebrow{
-    font-size:12px;
-    margin-bottom:6px;
-  }
-  .title{
-    font-size:clamp(36px,10vw,49px);
-  }
-  .title-rule{
-    margin:16px auto 19px;
-  }
-  .player{
-    min-height:70px;
-    grid-template-columns:48px 39px minmax(70px,1fr) 39px;
-    padding:8px 12px;
-    gap:7px;
-    border-radius:22px;
-  }
-  .play{
-    width:48px;
-    height:48px;
-  }
-  .play-shape{
-    border-top-width:9px;
-    border-bottom-width:9px;
-    border-left-width:15px;
-  }
-  .time{
-    font-size:15px;
-  }
-  .credits{
-    padding-top:22px;
-    font-size:15px;
-  }
-  .official{
-    font-size:12px;
-    margin-bottom:11px;
-  }
-  .credit-rule{
-    margin:13px auto;
-  }
-  .back{
-    font-size:12px;
-  }
-}
-
-/* Petits écrans / faible hauteur */
-@media(max-height:720px){
-  .hero-top{height:37svh}
-  .hero-bottom{height:25svh}
-  .main{transform:translateY(1svh)}
-  .title{font-size:clamp(34px,8vw,46px)}
-  .title-rule{margin:13px auto 16px}
-  .player{min-height:64px}
-  .credits{padding-top:17px;font-size:14px}
-  .official{font-size:11px;margin-bottom:8px}
-  .credit-rule{margin:10px auto}
-}
-
-/* MENU */
-.menu-page{
-  min-height:100vh;
-  background:#000;
-  display:flex;
-  justify-content:center;
-  text-align:center;
-  padding:76px 24px;
-}
-.menu-wrap{width:min(100%,480px)}
-.brand{
-  font-size:14px;
-  font-weight:300;
-  letter-spacing:.28em;
-  color:var(--sand);
-  margin:0 0 11px;
-}
-.menu-title{
-  font-size:clamp(42px,8vw,60px);
-  font-weight:300;
-  letter-spacing:.06em;
-  margin:0 0 46px;
-}
-.legend-links{border-top:1px solid rgba(214,178,133,.3)}
-.legend-links a{
-  display:block;
-  padding:21px 8px;
-  border-bottom:1px solid rgba(214,178,133,.3);
-  color:var(--ivory);
-  text-decoration:none;
-  font-size:clamp(24px,5vw,31px);
-  font-weight:300;
-  letter-spacing:.025em;
-}
-.legend-links a:hover{color:var(--sand)}
-.menu-footer{
-  margin-top:43px;
-  color:rgba(214,178,133,.7);
-  font-size:12px;
-  letter-spacing:.15em;
-}
-
-@media(max-width:600px){
-  .hero-top{
-    height:315px;
-    background-size:560px auto;
-  }
-  .hero-bottom{
-    height:320px;
-    background-size:560px auto;
-  }
-  .main{width:min(90%,680px)}
-  .player{
-    grid-template-columns:54px 43px minmax(80px,1fr) 43px;
-    min-height:80px;
-    padding:11px 14px;
-    gap:8px;
-    border-radius:23px;
-  }
-  .play{width:54px;height:54px}
-  .time{font-size:16px}
-  .credits{padding-top:38px}
+@media (max-height:760px){
+  .legend-page{grid-template-rows:100px auto 100px}
+  .mandala{min-height:100px}
+  .card{padding-top:15px;padding-bottom:15px}
+  h1{font-size:42px}
+  .rule{margin:12px auto 14px}
+  .official{margin:14px 0 10px}
+  .menu-link{margin-top:12px}
 }

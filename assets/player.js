@@ -1,42 +1,12 @@
 
-document.addEventListener("DOMContentLoaded",()=>{
-  const audio=document.querySelector("audio");
-  const play=document.querySelector(".play");
-  const seek=document.querySelector(".seek");
-  const cur=document.querySelector(".current");
-  const dur=document.querySelector(".duration");
-  if(!audio||!play||!seek)return;
-
-  const fmt=(s)=>{
-    if(!Number.isFinite(s)) return "00:00";
-    return String(Math.floor(s/60)).padStart(2,"0")+":"+String(Math.floor(s%60)).padStart(2,"0");
-  };
-
-  const syncButton=()=>{
-    play.dataset.state=audio.paused ? "play" : "pause";
-    play.setAttribute("aria-label",audio.paused ? "Lire" : "Mettre en pause");
-  };
-
-  audio.addEventListener("loadedmetadata",()=>{
-    dur.textContent=fmt(audio.duration);
-    seek.max=audio.duration||0;
-  });
-  audio.addEventListener("timeupdate",()=>{
-    cur.textContent=fmt(audio.currentTime);
-    seek.value=audio.currentTime;
-  });
-  audio.addEventListener("play",syncButton);
-  audio.addEventListener("pause",syncButton);
-  audio.addEventListener("ended",syncButton);
-
-  play.addEventListener("click",()=>{
-    if(audio.paused) audio.play();
-    else audio.pause();
-  });
-
-  seek.addEventListener("input",()=>{
-    audio.currentTime=Number(seek.value);
-  });
-
-  syncButton();
+document.querySelectorAll('.audio-widget').forEach(widget=>{
+ const audio=widget.querySelector('audio'), btn=widget.querySelector('.play'),
+ current=widget.querySelector('.current'), duration=widget.querySelector('.duration'),
+ seek=widget.querySelector('.seek');
+ const fmt=s=>{if(!isFinite(s))return "00:00"; const m=Math.floor(s/60),x=Math.floor(s%60);return `${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`};
+ audio.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(audio.duration);seek.max=audio.duration||0});
+ audio.addEventListener('timeupdate',()=>{current.textContent=fmt(audio.currentTime);seek.value=audio.currentTime||0});
+ audio.addEventListener('ended',()=>btn.classList.remove('is-playing'));
+ btn.addEventListener('click',async()=>{if(audio.paused){await audio.play();btn.classList.add('is-playing')}else{audio.pause();btn.classList.remove('is-playing')}});
+ seek.addEventListener('input',()=>audio.currentTime=Number(seek.value));
 });
